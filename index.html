@@ -470,12 +470,13 @@
     }
 
     .gameover-feedback {
-      font-size: 15px;
+      font-size: 17px;
       font-weight: 800;
       color: #38bdf8;
       text-align: center;
       line-height: 1.4;
       padding: 0 8px;
+      letter-spacing: 1px;
       text-shadow: 0 2px 4px rgba(0,0,0,0.8);
     }
 
@@ -882,7 +883,6 @@
 
         if (!this.isPreloaded) {
           this.isPreloaded = true;
-          // इन-गेम ऑडियो बफर प्रीलोड
           if (this.ctx) {
             Object.entries(this.voiceUrls).forEach(([key, url]) => {
               fetch(url)
@@ -895,7 +895,6 @@
             });
           }
 
-          // गेम-ओवर के सभी 10 ऑडियो बैकग्राउंड में पहले ही लोड कर लेना ताकि कोई लैग न हो
           const allGameOverUrls = [
             ...this.gameOverAudios.low,
             ...this.gameOverAudios.normal,
@@ -967,7 +966,6 @@
         }
       },
 
-      // बिना किसी देरी के तुरंत गेम-ओवर ऑडियो बजाना
       speakGameOver(score, isNewRecord) {
         if (!this.soundOn) return;
         let pool;
@@ -1613,15 +1611,16 @@
       finalScoreVal.innerText = currentScore;
       overBestScore.innerText = highScore;
 
+      // साफ़ और यूनिवर्सल संदेश - जो हर आवाज़ के साथ मैच लगे
       let feedback = "";
       if (isNewRecordMade || currentScore >= 100000) {
-        feedback = "👑 NEW RECORD! FANTASTIC RUN!";
+        feedback = "👑 NEW RECORD!";
       } else if (currentScore >= 50000) {
-        feedback = "🔥 INCREDIBLE EFFORT! ALMOST UNBEATABLE!";
+        feedback = "🔥 OUTSTANDING RUN!";
       } else if (currentScore >= 250) {
-        feedback = "⭐ GOOD EFFORT! YOU CAN DO BETTER!";
+        feedback = "⭐ WELL PLAYED!";
       } else {
-        feedback = "💪 NICE TRY! PRACTICE MAKES PERFECT!";
+        feedback = "💪 NICE TRY!";
       }
 
       gameoverFeedbackText.innerText = feedback;

@@ -819,7 +819,7 @@
 
   <script>
     // ========================================================
-    // STRICT ON-DEMAND AUDIO ENGINE (NO AUTOPLAY CONFLICT)
+    // BULLETPROOF AUDIO ENGINE (NO PRELOAD, NO AUTO TRIGGER)
     // ========================================================
     const AudioEngine = {
       soundOn: true,
@@ -829,9 +829,7 @@
       bgmIndex: 0,
       melodyNotes: [261.63, 329.63, 392.00, 523.25, 392.00, 329.63, 293.66, 349.23, 440.00, 392.00],
 
-      // 20 URLs strictly played on exact trigger
       urls: {
-        "bgm":          "https://files.catbox.moe/2ubg6w.mp3",
         "pick":         "https://files.catbox.moe/t0g5wb.mp3",
         "place":        "https://files.catbox.moe/xd2eyi.mp3",
         "blast1":       "https://files.catbox.moe/e9oksd.mp3",
@@ -854,15 +852,12 @@
         "unbelievable": "https://files.catbox.moe/0fezxy.mp3"
       },
 
-      init() {},
-
       vibrate(ms = 35) {
         if (this.vibeOn && navigator.vibrate) {
           navigator.vibrate(ms);
         }
       },
 
-      // Single audio instance trigger on exact event only
       playTrack(key, volume = 0.9) {
         if (!this.soundOn || !this.urls[key]) return;
         try {
@@ -874,7 +869,6 @@
 
       startBGM() {
         if (!this.musicOn || this.bgmTimer) return;
-        // Clean gentle synth melody for background so it never clashes with voices
         const AudioContext = window.AudioContext || window.webkitAudioContext;
         if (!this.ctx) this.ctx = new AudioContext();
         if (this.ctx.state === 'suspended') this.ctx.resume();
@@ -887,7 +881,7 @@
           const gain = this.ctx.createGain();
           osc.type = 'sine';
           osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
-          gain.gain.setValueAtTime(0.02, this.ctx.currentTime);
+          gain.gain.setValueAtTime(0.015, this.ctx.currentTime);
           gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + 0.38);
           osc.connect(gain);
           gain.connect(this.ctx.destination);
@@ -997,6 +991,7 @@
     let streakCount = 0;
     let grid = Array(8).fill().map(() => Array(8).fill(null));
     let availableBlocks = [null, null, null];
+    let isGameRunning = false;
 
     let dragData = null;
     let isDragging = false;
@@ -1055,6 +1050,7 @@
     createGrid();
 
     function startGame() {
+      isGameRunning = true;
       AudioEngine.startBGM();
       homeScreen.classList.add('hidden');
       gameoverScreen.classList.add('hidden');
@@ -1089,6 +1085,7 @@
     }
 
     function triggerCommentary(titleText, spokenWord, subText) {
+      if (!isGameRunning) return;
       commentaryTitle.innerText = titleText;
       commentaryPoints.innerText = subText;
       commentaryPopup.classList.remove('show');
@@ -1459,6 +1456,7 @@
     }
 
     function checkGameOver() {
+      if (!isGameRunning) return;
       let canMove = false;
       for (let i = 0; i < 3; i++) {
         const b = availableBlocks[i];
@@ -1476,6 +1474,7 @@
       }
 
       if (!canMove && availableBlocks.some(b => b !== null)) {
+        isGameRunning = false;
         setTimeout(() => {
           showGameOverScreen();
         }, 350);
@@ -1511,7 +1510,7 @@
       gameoverFeedbackText.innerText = feedback;
       setTimeout(() => {
         AudioEngine.speak(speakWord);
-      }, 200);
+      }, 250);
     }
 
     const settingsModal = document.getElementById('settings-modal');
@@ -1552,6 +1551,7 @@
     }
 
     function returnToHome() {
+      isGameRunning = false;
       closeSettings();
       AudioEngine.stopBGM();
       gameplayScreen.classList.add('hidden');

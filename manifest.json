@@ -1,0 +1,13 @@
+{
+  "background_color": "#ffffff",
+  "dir": "ltr",
+  "display": "standalone",
+  "name": "Block Blast Deluxe",
+  "orientation": "any",
+  "scope": "/",
+  "short_name": "Block blast",
+  "start_url": "/",
+  "theme_color": "#ffffff",
+  "description": "Play Block Blast Deluxe game",
+  "id": "com.chandresh.blockblast"
+}

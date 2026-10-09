@@ -4,6 +4,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Block Blast Deluxe</title>
+  <script>
+document.addEventListener('touchstart', function() {
+    if (window.AudioContext || window.webkitAudioContext) {
+        let audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') {
+            audioCtx.resume();
+        }
+    }
+}, { once: true });
+  </script>
+  
   <style>
     :root {
       --bg-gradient: radial-gradient(circle at 50% 25%, #231c44 0%, #0d091a 100%);

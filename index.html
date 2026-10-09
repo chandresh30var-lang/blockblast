@@ -1682,6 +1682,18 @@ document.addEventListener('touchstart', function() {
       el.innerText = AudioEngine.vibeOn ? 'ON' : 'OFF';
       el.classList.toggle('off', !AudioEngine.vibeOn);
     }
+    // --- Chrome Audio Auto-Unlocker ---
+window.addEventListener('pointerdown', () => {
+    try {
+        if (typeof AudioEngine !== 'undefined') {
+            if (AudioEngine.ctx && AudioEngine.ctx.state === 'suspended') {
+                AudioEngine.ctx.resume();
+            }
+            if (AudioEngine.init) AudioEngine.init();
+        }
+    } catch(e) {}
+}, { once: true });
+    
   </script>
 </body>
 </html>

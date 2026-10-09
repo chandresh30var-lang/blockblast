@@ -67,7 +67,6 @@
       display: none !important;
     }
 
-    /* टॉप बार */
     .top-bar {
       width: 100%;
       display: flex;
@@ -105,7 +104,6 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.4);
     }
 
-    /* फ्लोटिंग बैकग्राउंड शेप्स */
     .floating-shape {
       position: absolute;
       pointer-events: none;
@@ -231,7 +229,6 @@
       text-align: center;
     }
 
-    /* गेमप्ले हेडर */
     .game-header {
       width: 100%;
       display: flex;
@@ -319,7 +316,6 @@
       100% { transform: translate3d(-50%, -75%, 0) scale(1.3); opacity: 0; }
     }
 
-    /* 8x8 ग्रिड */
     #grid-board {
       width: 320px;
       height: 320px;
@@ -362,7 +358,6 @@
       box-shadow: var(--block-bevel);
     }
 
-    /* बॉटम ट्रे */
     #spawn-tray {
       width: 100%;
       height: 106px;
@@ -398,7 +393,6 @@
       pointer-events: none;
     }
 
-    /* 120fps हार्डवेयर प्रॉक्सी */
     #drag-proxy {
       position: fixed;
       pointer-events: none;
@@ -418,7 +412,6 @@
       box-shadow: var(--block-bevel), 0 14px 28px rgba(0,0,0,0.85);
     }
 
-    /* गेम ओवर स्क्रीन */
     #gameover-screen {
       background: radial-gradient(circle at 50% 30%, #2f122a 0%, #0d0612 100%);
       z-index: 50;
@@ -470,13 +463,14 @@
     }
 
     .gameover-feedback {
-      font-size: 17px;
+      font-size: 16px;
       font-weight: 800;
       color: #38bdf8;
       text-align: center;
       line-height: 1.4;
       padding: 0 8px;
-      letter-spacing: 1px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
       text-shadow: 0 2px 4px rgba(0,0,0,0.8);
     }
 
@@ -508,7 +502,6 @@
       box-shadow: 0 3px 0 #0369a1;
     }
 
-    /* मोडल स्टाइल */
     .modal-overlay {
       position: absolute;
       top: 0;
@@ -851,22 +844,23 @@
         "unbelievable": "https://files.catbox.moe/0fezxy.mp3"
       },
 
-      gameOverAudios: {
+      // 100% सटीक मैपिंग: ऑडियो + स्क्रीन टेक्स्ट
+      gameOverData: {
         low: [
-          "https://files.catbox.moe/2ubg6w.mp3",
-          "https://files.catbox.moe/t0g5wb.mp3",
-          "https://files.catbox.moe/xd2eyi.mp3"
+          { url: "https://files.catbox.moe/2ubg6w.mp3", text: "NICE TRY, DON'T GIVE UP!" },
+          { url: "https://files.catbox.moe/t0g5wb.mp3", text: "NICE TRY, BETTER LUCK NEXT TIME!" },
+          { url: "https://files.catbox.moe/xd2eyi.mp3", text: "GOOD EFFORT, YOU CAN DO BETTER!" },
+          { url: "https://files.catbox.moe/e9oksd.mp3", text: "OH NO, LET'S TRY ONE MORE TIME!" },
+          { url: "https://files.catbox.moe/nwfmw2.mp3", text: "OOPS, COME ON, YOU GOT THIS!" }
         ],
         normal: [
-          "https://files.catbox.moe/a8kkmx.mp3",
-          "https://files.catbox.moe/wqt62g.mp3",
-          "https://files.catbox.moe/1rvyo0.mp3",
-          "https://files.catbox.moe/e9oksd.mp3"
+          { url: "https://files.catbox.moe/clo7c1.mp3", text: "SPECTACULAR GAME, THAT WAS CLOSE!" },
+          { url: "https://files.catbox.moe/5lrc20.mp3", text: "AWESOME RUN, WELL PLAYED!" }
         ],
         record: [
-          "https://files.catbox.moe/nwfmw2.mp3",
-          "https://files.catbox.moe/clo7c1.mp3",
-          "https://files.catbox.moe/5lrc20.mp3"
+          { url: "https://files.catbox.moe/a8kkmx.mp3", text: "👑 NEW HIGH SCORE, FANTASTIC JOB!" },
+          { url: "https://files.catbox.moe/wqt62g.mp3", text: "👑 NEW RECORD! YOU PLAYED IT SO WELL!" },
+          { url: "https://files.catbox.moe/1rvyo0.mp3", text: "👑 UNBELIEVABLE! THAT'S A NEW PERSONAL BEST!" }
         ]
       },
 
@@ -895,16 +889,16 @@
             });
           }
 
-          const allGameOverUrls = [
-            ...this.gameOverAudios.low,
-            ...this.gameOverAudios.normal,
-            ...this.gameOverAudios.record
+          const allGameOverItems = [
+            ...this.gameOverData.low,
+            ...this.gameOverData.normal,
+            ...this.gameOverData.record
           ];
-          allGameOverUrls.forEach(url => {
+          allGameOverItems.forEach(item => {
             const a = new Audio();
             a.preload = "auto";
-            a.src = url;
-            this.preloadedAudioObjects[url] = a;
+            a.src = item.url;
+            this.preloadedAudioObjects[item.url] = a;
           });
         }
       },
@@ -966,20 +960,27 @@
         }
       },
 
-      speakGameOver(score, isNewRecord) {
-        if (!this.soundOn) return;
+      speakGameOver(score, isNewRecord, feedbackElement) {
         let pool;
-        if (isNewRecord || score >= 20000) {
-          pool = this.gameOverAudios.record;
-        } else if (score < 250) {
-          pool = this.gameOverAudios.low;
+        if (isNewRecord) {
+          pool = this.gameOverData.record;
+        } else if (score < 500) {
+          pool = this.gameOverData.low;
         } else {
-          pool = this.gameOverAudios.normal;
+          pool = this.gameOverData.normal;
         }
 
-        const chosenUrl = pool[Math.floor(Math.random() * pool.length)];
+        const chosen = pool[Math.floor(Math.random() * pool.length)];
+
+        // जो बोला जाएगा, वही स्क्रीन पर लिखा हुआ दिखेगा
+        if (feedbackElement) {
+          feedbackElement.innerText = chosen.text;
+        }
+
+        if (!this.soundOn) return;
+
         try {
-          const snd = this.preloadedAudioObjects[chosenUrl] || new Audio(chosenUrl);
+          const snd = this.preloadedAudioObjects[chosen.url] || new Audio(chosen.url);
           snd.currentTime = 0;
           snd.play().catch(e => console.warn("GameOver voice error:", e));
         } catch(e) {}
@@ -1042,21 +1043,6 @@
           gain.gain.linearRampToValueAtTime(0, this.ctx.currentTime + idx * 0.07 + 0.35);
           osc.start(this.ctx.currentTime + idx * 0.07);
           osc.stop(this.ctx.currentTime + idx * 0.07 + 0.35);
-        });
-      },
-
-      playGameOver() {
-        if (!this.soundOn || !this.ctx) return;
-        const notes = [400, 350, 300, 240];
-        notes.forEach((freq, idx) => {
-          const osc = this.ctx.createOscillator();
-          const gain = this.ctx.createGain();
-          osc.connect(gain); gain.connect(this.ctx.destination);
-          osc.frequency.setValueAtTime(freq, this.ctx.currentTime + idx * 0.1);
-          gain.gain.setValueAtTime(0.25, this.ctx.currentTime + idx * 0.1);
-          gain.gain.linearRampToValueAtTime(0, this.ctx.currentTime + idx * 0.1 + 0.2);
-          osc.start(this.ctx.currentTime + idx * 0.1);
-          osc.stop(this.ctx.currentTime + idx * 0.1 + 0.2);
         });
       }
     };
@@ -1611,22 +1597,8 @@
       finalScoreVal.innerText = currentScore;
       overBestScore.innerText = highScore;
 
-      // साफ़ और यूनिवर्सल संदेश - जो हर आवाज़ के साथ मैच लगे
-      let feedback = "";
-      if (isNewRecordMade || currentScore >= 100000) {
-        feedback = "👑 NEW RECORD!";
-      } else if (currentScore >= 50000) {
-        feedback = "🔥 OUTSTANDING RUN!";
-      } else if (currentScore >= 250) {
-        feedback = "⭐ WELL PLAYED!";
-      } else {
-        feedback = "💪 NICE TRY!";
-      }
-
-      gameoverFeedbackText.innerText = feedback;
-
-      // स्क्रीन आते ही तुरंत बिना किसी रुकावट के ऑडियो प्ले
-      AudioEngine.speakGameOver(currentScore, isNewRecordMade);
+      // ऑडियो प्ले होगा और साथ ही स्क्रीन टेक्स्ट भी वही सेट होगा जो बोला जा रहा है
+      AudioEngine.speakGameOver(currentScore, isNewRecordMade, gameoverFeedbackText);
     }
 
     const settingsModal = document.getElementById('settings-modal');

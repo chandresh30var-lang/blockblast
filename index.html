@@ -850,7 +850,6 @@
         "unbelievable": "https://files.catbox.moe/0fezxy.mp3"
       },
 
-      // नए 10 गेम-ओवर ऑडियोज़
       gameOverAudios: {
         low: [
           "https://files.catbox.moe/2ubg6w.mp3",
@@ -870,6 +869,8 @@
         ]
       },
 
+      preloadedAudioObjects: {},
+
       init() {
         if (!this.ctx) {
           const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -879,17 +880,32 @@
           this.ctx.resume();
         }
 
-        // सभी गेमप्ले वॉइस क्लिप्स को रैम में प्रीलोड करना
-        if (!this.isPreloaded && this.ctx) {
+        if (!this.isPreloaded) {
           this.isPreloaded = true;
-          Object.entries(this.voiceUrls).forEach(([key, url]) => {
-            fetch(url)
-              .then(res => res.arrayBuffer())
-              .then(buf => this.ctx.decodeAudioData(buf))
-              .then(decoded => {
-                this.audioBuffers[key] = decoded;
-              })
-              .catch(() => {});
+          // इन-गेम ऑडियो बफर प्रीलोड
+          if (this.ctx) {
+            Object.entries(this.voiceUrls).forEach(([key, url]) => {
+              fetch(url)
+                .then(res => res.arrayBuffer())
+                .then(buf => this.ctx.decodeAudioData(buf))
+                .then(decoded => {
+                  this.audioBuffers[key] = decoded;
+                })
+                .catch(() => {});
+            });
+          }
+
+          // गेम-ओवर के सभी 10 ऑडियो बैकग्राउंड में पहले ही लोड कर लेना ताकि कोई लैग न हो
+          const allGameOverUrls = [
+            ...this.gameOverAudios.low,
+            ...this.gameOverAudios.normal,
+            ...this.gameOverAudios.record
+          ];
+          allGameOverUrls.forEach(url => {
+            const a = new Audio();
+            a.preload = "auto";
+            a.src = url;
+            this.preloadedAudioObjects[url] = a;
           });
         }
       },
@@ -951,7 +967,7 @@
         }
       },
 
-      // गेम ओवर वॉइस सेलेक्टर
+      // बिना किसी देरी के तुरंत गेम-ओवर ऑडियो बजाना
       speakGameOver(score, isNewRecord) {
         if (!this.soundOn) return;
         let pool;
@@ -965,7 +981,8 @@
 
         const chosenUrl = pool[Math.floor(Math.random() * pool.length)];
         try {
-          const snd = new Audio(chosenUrl);
+          const snd = this.preloadedAudioObjects[chosenUrl] || new Audio(chosenUrl);
+          snd.currentTime = 0;
           snd.play().catch(e => console.warn("GameOver voice error:", e));
         } catch(e) {}
       },
@@ -1584,13 +1601,12 @@
       if (!canMove && availableBlocks.some(b => b !== null)) {
         setTimeout(() => {
           showGameOverScreen();
-        }, 350);
+        }, 150);
       }
     }
 
     function showGameOverScreen() {
       AudioEngine.stopBGM();
-      AudioEngine.playGameOver();
       gameplayScreen.classList.add('hidden');
       gameoverScreen.classList.remove('hidden');
 
@@ -1610,10 +1626,8 @@
 
       gameoverFeedbackText.innerText = feedback;
 
-      // 10 कंडीशनल लिंक्स में से सही आवाज़ चलाना
-      setTimeout(() => {
-        AudioEngine.speakGameOver(currentScore, isNewRecordMade);
-      }, 300);
+      // स्क्रीन आते ही तुरंत बिना किसी रुकावट के ऑडियो प्ले
+      AudioEngine.speakGameOver(currentScore, isNewRecordMade);
     }
 
     const settingsModal = document.getElementById('settings-modal');

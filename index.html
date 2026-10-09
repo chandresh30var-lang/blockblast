@@ -850,6 +850,26 @@
         "unbelievable": "https://files.catbox.moe/0fezxy.mp3"
       },
 
+      // नए 10 गेम-ओवर ऑडियोज़
+      gameOverAudios: {
+        low: [
+          "https://files.catbox.moe/2ubg6w.mp3",
+          "https://files.catbox.moe/t0g5wb.mp3",
+          "https://files.catbox.moe/xd2eyi.mp3"
+        ],
+        normal: [
+          "https://files.catbox.moe/a8kkmx.mp3",
+          "https://files.catbox.moe/wqt62g.mp3",
+          "https://files.catbox.moe/1rvyo0.mp3",
+          "https://files.catbox.moe/e9oksd.mp3"
+        ],
+        record: [
+          "https://files.catbox.moe/nwfmw2.mp3",
+          "https://files.catbox.moe/clo7c1.mp3",
+          "https://files.catbox.moe/5lrc20.mp3"
+        ]
+      },
+
       init() {
         if (!this.ctx) {
           const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -859,7 +879,7 @@
           this.ctx.resume();
         }
 
-        // सभी 10 वॉइस क्लिप्स को सीधे रैम (RAM Buffer) में लोड करना
+        // सभी गेमप्ले वॉइस क्लिप्स को रैम में प्रीलोड करना
         if (!this.isPreloaded && this.ctx) {
           this.isPreloaded = true;
           Object.entries(this.voiceUrls).forEach(([key, url]) => {
@@ -909,7 +929,6 @@
         }
       },
 
-      // वेबव्यू और एपीके-प्रूफ़ वॉइस प्लेयर
       speak(word) {
         if (!this.soundOn || !word) return;
         if (this.ctx && this.ctx.state === 'suspended') {
@@ -920,18 +939,35 @@
         const buffer = this.audioBuffers[key];
 
         if (buffer && this.ctx) {
-          // 1st Priority: सीधे हार्डवेयर ऑडियो बफ़र से प्ले (बिना रोक-टोक)
           const source = this.ctx.createBufferSource();
           source.buffer = buffer;
           source.connect(this.ctx.destination);
           source.start(0);
         } else if (this.voiceUrls[key]) {
-          // 2nd Priority: बैकअप प्लेबैक
           try {
             const fallback = new Audio(this.voiceUrls[key]);
             fallback.play().catch(() => {});
           } catch(e) {}
         }
+      },
+
+      // गेम ओवर वॉइस सेलेक्टर
+      speakGameOver(score, isNewRecord) {
+        if (!this.soundOn) return;
+        let pool;
+        if (isNewRecord || score >= 20000) {
+          pool = this.gameOverAudios.record;
+        } else if (score < 250) {
+          pool = this.gameOverAudios.low;
+        } else {
+          pool = this.gameOverAudios.normal;
+        }
+
+        const chosenUrl = pool[Math.floor(Math.random() * pool.length)];
+        try {
+          const snd = new Audio(chosenUrl);
+          snd.play().catch(e => console.warn("GameOver voice error:", e));
+        } catch(e) {}
       },
 
       playPick() {
@@ -1010,7 +1046,6 @@
       }
     };
 
-    // पहले यूजर टच पर ही पूरे ऑडियो को अनब्लॉक करना
     window.addEventListener('pointerdown', () => {
       AudioEngine.init();
     }, { once: true });
@@ -1064,6 +1099,7 @@
     let streakCount = 0;
     let grid = Array(8).fill().map(() => Array(8).fill(null));
     let availableBlocks = [null, null, null];
+    let isNewRecordMade = false;
 
     let dragData = null;
     let isDragging = false;
@@ -1130,6 +1166,7 @@
       currentScore = 0;
       currentLevel = 1;
       streakCount = 0;
+      isNewRecordMade = false;
       grid = Array(8).fill().map(() => Array(8).fill(null));
       updateScore(0);
       applyLevelTheme(1);
@@ -1144,6 +1181,7 @@
       setTimeout(() => scoreDisplay.style.transform = 'scale(1)', 120);
 
       if (currentScore > highScore) {
+        if (highScore > 0) isNewRecordMade = true;
         highScore = currentScore;
         localStorage.setItem('block_blast_high', highScore);
         homeBestScore.innerText = highScore;
@@ -1560,26 +1598,22 @@
       overBestScore.innerText = highScore;
 
       let feedback = "";
-      let speakWord = "";
-
-      if (currentScore >= 100000) {
-        feedback = "👑 LEGENDARY! YOU ARE A PUZZLE MASTER!";
-        speakWord = "unbelievable";
+      if (isNewRecordMade || currentScore >= 100000) {
+        feedback = "👑 NEW RECORD! FANTASTIC RUN!";
       } else if (currentScore >= 50000) {
         feedback = "🔥 INCREDIBLE EFFORT! ALMOST UNBEATABLE!";
-        speakWord = "fantastic";
-      } else if (currentScore >= 20000) {
-        feedback = "⭐ GREAT GAMEPLAY! WELL PLAYED!";
-        speakWord = "great";
+      } else if (currentScore >= 250) {
+        feedback = "⭐ GOOD EFFORT! YOU CAN DO BETTER!";
       } else {
         feedback = "💪 NICE TRY! PRACTICE MAKES PERFECT!";
-        speakWord = "nice";
       }
 
       gameoverFeedbackText.innerText = feedback;
+
+      // 10 कंडीशनल लिंक्स में से सही आवाज़ चलाना
       setTimeout(() => {
-        AudioEngine.speak(speakWord);
-      }, 200);
+        AudioEngine.speakGameOver(currentScore, isNewRecordMade);
+      }, 300);
     }
 
     const settingsModal = document.getElementById('settings-modal');

@@ -561,7 +561,7 @@
     }
 
     .gameover-feedback {
-      font-size: 18px;
+      font-size: 17px;
       font-weight: 800;
       color: #38bdf8;
       text-align: center;
@@ -837,7 +837,7 @@
       <div class="gameover-score-card">
         <div class="gameover-score-label">FINAL SCORE</div>
         <div class="gameover-score-value" id="final-score-val">0</div>
-        <div class="gameover-feedback" id="gameover-feedback-text">OH NO! NICE TRY!</div>
+        <div class="gameover-feedback" id="gameover-feedback-text">OH NO, LET'S TRY ONE MORE TIME</div>
       </div>
 
       <div class="gameover-actions">
@@ -926,9 +926,6 @@
   </div>
 
   <script>
-    // ========================================================
-    // ORGANIC TACTILE & ZERO-DELAY AUDIO ENGINE (RICH CHORDS)
-    // ========================================================
     const AudioEngine = {
       soundOn: localStorage.getItem('bb_sound') !== 'false',
       musicOn: localStorage.getItem('bb_music') !== 'false',
@@ -961,18 +958,23 @@
         "unbelievable": "https://files.catbox.moe/0fezxy.mp3"
       },
 
-      // 100% सटीक टेक्स्ट और ऑडियो मैपिंग
+      // 100% सटीक मैपिंग: ऑडियो लिंक और उस फ़ाइल के असली डायलॉग
       gameOverFiles: {
-        "2ubg6w": { text: "OH NO! NICE TRY!", url: "https://files.catbox.moe/2ubg6w.mp3" },
-        "5lrc20": { text: "OH NO! BETTER LUCK NEXT TIME!", url: "https://files.catbox.moe/5lrc20.mp3" },
-        "clo7c1": { text: "ALMOST THERE! GO FOR HIGH SCORE!", url: "https://files.catbox.moe/clo7c1.mp3" },
-        "xd2eyi": { text: "GOOD EFFORT! TRY AGAIN!", url: "https://files.catbox.moe/xd2eyi.mp3" },
-        "e9oksd": { text: "KEEP GOING! YOU ARE GETTING BETTER!", url: "https://files.catbox.moe/e9oksd.mp3" },
-        "nwfmw2": { text: "PRACTICE MAKES PERFECT!", url: "https://files.catbox.moe/nwfmw2.mp3" },
-        "t0g5wb": { text: "WELL DONE! GREAT GAMEPLAY!", url: "https://files.catbox.moe/t0g5wb.mp3" },
-        "1rvyo0": { text: "AWESOME RUN! WELL PLAYED!", url: "https://files.catbox.moe/1rvyo0.mp3" },
-        "a8kkmx": { text: "PERSONAL BEST! NEW RECORD!", url: "https://files.catbox.moe/a8kkmx.mp3" },
-        "wqt62g": { text: "SPECTACULAR GAME!", url: "https://files.catbox.moe/wqt62g.mp3" }
+        // 1 से 5: सांत्वना व सामान्य गेम ओवर
+        "1": { text: "NICE TRY, DON'T GIVE UP, TRY AGAIN", url: "https://files.catbox.moe/2ubg6w.mp3" },
+        "2": { text: "NICE TRY, BETTER LUCK NEXT TIME", url: "https://files.catbox.moe/t0g5wb.mp3" },
+        "3": { text: "GOOD EFFORT, YOU CAN DO BETTER", url: "https://files.catbox.moe/xd2eyi.mp3" },
+        "4": { text: "OH NO, LET'S TRY ONE MORE TIME", url: "https://files.catbox.moe/e9oksd.mp3" },
+        "5": { text: "OOPS, COME ON, YOU GOT THIS", url: "https://files.catbox.moe/nwfmw2.mp3" },
+        
+        // 6 और 7: अच्छा स्कोर
+        "6": { text: "SPECTACULAR GAME, THAT WAS CLOSE", url: "https://files.catbox.moe/clo7c1.mp3" },
+        "7": { text: "AWESOME RUN, WELL PLAYED", url: "https://files.catbox.moe/5lrc20.mp3" },
+        
+        // 8, 9, 10: हाई स्कोर और नए रिकॉर्ड
+        "8": { text: "NEW HIGH SCORE, FANTASTIC JOB", url: "https://files.catbox.moe/a8kkmx.mp3" },
+        "9": { text: "NEW RECORD, YOU PLAYED IT SO WELL", url: "https://files.catbox.moe/wqt62g.mp3" },
+        "10": { text: "UNBELIEVABLE, THAT'S A NEW PERSONAL BEST", url: "https://files.catbox.moe/1rvyo0.mp3" }
       },
 
       init() {
@@ -1025,41 +1027,35 @@
         }
       },
 
-      // सख्त स्कोर स्लैब के अनुसार ऑडियो और टेक्स्ट का चयन
+      // आपके द्वारा सेट किया गया सटीक स्कोर लॉजिक
       speakGameOver(score, isNewHighScore) {
         let pickedKey;
 
-        // 1. यदि नया हाई-स्कोर बना (20,000 से ऊपर)
-        if (isNewHighScore && score >= 20000) {
-          pickedKey = "a8kkmx"; // PERSONAL BEST! NEW RECORD!
+        // नियम 1: अगर नया हाई-स्कोर या पर्सनल बेस्ट बना
+        if (isNewHighScore && score >= 2500) {
+          const recordPool = ["8", "9", "10"];
+          pickedKey = recordPool[Math.floor(Math.random() * recordPool.length)];
         }
-        // 2. बहुत बड़ा स्कोर (50,000+)
-        else if (score >= 50000) {
-          pickedKey = "wqt62g"; // SPECTACULAR GAME!
-        }
-        // 3. शानदार स्कोर (25,000 - 50,000)
-        else if (score >= 25000) {
-          pickedKey = "1rvyo0"; // AWESOME RUN!
-        }
-        // 4. बढ़िया स्कोर (15,000 - 25,000)
-        else if (score >= 15000) {
-          pickedKey = "t0g5wb"; // WELL DONE!
-        }
-        // 5. मध्यम स्कोर (5,000 - 15,000)
-        else if (score >= 5000) {
-          const medPool = ["xd2eyi", "e9oksd", "nwfmw2"];
-          pickedKey = medPool[Math.floor(Math.random() * medPool.length)];
-        }
-        // 6. कम स्कोर (0 - 5,000): केवल 'OH NO' या सांत्वना वाले साउंड्स
-        else {
-          const lowPool = ["2ubg6w", "5lrc20", "clo7c1"];
+        // नियम 2: अगर स्कोर 2500 से कम है (लेवल 1 पार नहीं कर पाया)
+        else if (score < 2500) {
+          const lowPool = ["4", "5"]; // Oh no (4) या Oops (5)
           pickedKey = lowPool[Math.floor(Math.random() * lowPool.length)];
+        }
+        // नियम 3: बहुत बड़ा स्कोर (20,000+)
+        else if (score >= 20000) {
+          const highPool = ["6", "7"]; // Spectacular game (6) या Awesome run (7)
+          pickedKey = highPool[Math.floor(Math.random() * highPool.length)];
+        }
+        // नियम 4: 2,500 से 20,000 तक (लेवल पार करने पर Nice Try / Good Effort)
+        else {
+          const midPool = ["1", "2", "3"]; // Nice try don't give up (1), Nice try better luck (2), Good effort (3)
+          pickedKey = midPool[Math.floor(Math.random() * midPool.length)];
         }
 
         const item = this.gameOverFiles[pickedKey];
         const feedbackEl = document.getElementById('gameover-feedback-text');
         
-        // जो ऑडियो बोलेगा, ठीक वही टेक्स्ट स्क्रीन पर आएगा
+        // जो आवाज़ बजेगी, स्क्रीन पर अक्षरशः वही शब्द दिखेंगे
         feedbackEl.innerText = item.text;
 
         this.init();
@@ -1909,7 +1905,7 @@
       finalScoreVal.innerText = currentScore;
       overBestScore.innerText = highScore;
 
-      // 100% सटीक वॉइस और टेक्स्ट
+      // 100% सटीक वॉइस और मैचिंग टेक्स्ट
       AudioEngine.speakGameOver(currentScore, hadBrokenHighScore);
     }
 
@@ -1942,7 +1938,7 @@
 
     function closeRules() {
       AudioEngine.playClick();
-      rulesModal.classList.remove('active');
+      rulesModal.classList.add('active');
     }
 
     function restartGame() {

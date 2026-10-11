@@ -6,13 +6,13 @@
   <title>Block Blast Deluxe</title>
   <style>
     :root {
-      --bg-gradient: radial-gradient(circle at 50% 25%, #231c44 0%, #0d091a 100%);
+      --bg-gradient: radial-gradient(circle at 50% 25%, #1e183a 0%, #0a0715 100%);
       --grid-bg: #141022;
       --cell-bg: #1f1833;
       --cell-border: #322752;
-      --block-bevel: inset 0 3px 2px rgba(255,255,255,0.5), inset 0 -4px 3px rgba(0,0,0,0.5);
+      --block-bevel: inset 0 2px 2px rgba(255,255,255,0.4), inset 0 -3px 2px rgba(0,0,0,0.4);
       --score-gradient: linear-gradient(180deg, #ffffff 0%, #38bdf8 60%, #0284c7 100%);
-      --score-glow: rgba(56, 189, 248, 0.6);
+      --score-glow: rgba(56, 189, 248, 0.35);
     }
 
     * {
@@ -109,7 +109,7 @@
     .floating-shape {
       position: absolute;
       pointer-events: none;
-      opacity: 0.45;
+      opacity: 0.35;
       z-index: 1;
       filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5));
       animation: floatMotion 6s infinite ease-in-out alternate;
@@ -144,7 +144,7 @@
       font-weight: 900;
       letter-spacing: 6px;
       color: #ff9900;
-      text-shadow: 0 2px 0 #fff, 0 4px 0 #d96500, 0 8px 0 #993d00, 0 12px 18px rgba(0,0,0,0.8);
+      text-shadow: 0 2px 0 #fff, 0 4px 0 #d96500, 0 6px 0 #993d00, 0 10px 14px rgba(0,0,0,0.7);
     }
 
     .logo-blast {
@@ -152,7 +152,7 @@
       font-weight: 900;
       letter-spacing: 7px;
       color: #00d2ff;
-      text-shadow: 0 2px 0 #fff, 0 5px 0 #0088cc, 0 8px 0 #005580, 0 14px 20px rgba(0,0,0,0.8);
+      text-shadow: 0 2px 0 #fff, 0 4px 0 #0088cc, 0 6px 0 #005580, 0 10px 15px rgba(0,0,0,0.7);
       margin-top: -14px;
     }
 
@@ -161,12 +161,11 @@
       font-weight: 900;
       letter-spacing: 7px;
       color: #fff176;
-      background: linear-gradient(180deg, rgba(255,215,0,0.3), rgba(255,140,0,0.2));
-      border: 2px solid #ffd700;
+      background: linear-gradient(180deg, rgba(255,215,0,0.25), rgba(255,140,0,0.15));
+      border: 1.5px solid #ffd700;
       padding: 4px 20px;
       border-radius: 16px;
       margin-top: 6px;
-      box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
     }
 
     .play-btn {
@@ -223,7 +222,6 @@
       font-weight: 800;
       letter-spacing: 1.5px;
       text-transform: uppercase;
-      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9);
       padding: 5px 16px;
       background: rgba(255, 255, 255, 0.08);
       border: 1px solid rgba(255, 215, 0, 0.35);
@@ -275,7 +273,7 @@
       background: var(--score-gradient);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      filter: drop-shadow(0 3px 6px rgba(0,0,0,0.8)) drop-shadow(0 0 16px var(--score-glow));
+      filter: drop-shadow(0 3px 6px rgba(0,0,0,0.8));
       transition: transform 0.12s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       letter-spacing: 1px;
     }
@@ -294,7 +292,6 @@
       height: 100%;
       width: 0%;
       background: linear-gradient(90deg, #38bdf8, #ffd700);
-      box-shadow: 0 0 8px #ffd700;
       transition: width 0.3s ease;
     }
 
@@ -310,7 +307,6 @@
       font-weight: 900;
       letter-spacing: 1.5px;
       text-transform: uppercase;
-      box-shadow: 0 0 15px rgba(255, 75, 43, 0.7);
       opacity: 0;
       transform: scale(0.6);
       transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -344,24 +340,24 @@
       letter-spacing: 2px;
       text-transform: uppercase;
       color: #ffd700;
-      text-shadow: 0 3px 0 #fff, 0 6px 0 #d97706, 0 10px 0 #92400e, 0 14px 20px rgba(0,0,0,0.8);
+      text-shadow: 0 3px 0 #fff, 0 5px 0 #d97706, 0 8px 12px rgba(0,0,0,0.7);
     }
 
     .commentary-sub {
       font-size: 16px;
       font-weight: 900;
       color: #fff;
-      text-shadow: 0 3px 6px #000, 0 0 12px #38bdf8;
+      text-shadow: 0 2px 4px #000;
       letter-spacing: 2px;
       margin-top: -4px;
     }
 
     @keyframes commentaryBurst {
-      0% { transform: translate3d(-50%, -50%, 0) scale(0.2) rotate(-8deg); opacity: 0; }
-      20% { transform: translate3d(-50%, -50%, 0) scale(1.2) rotate(3deg); opacity: 1; }
+      0% { transform: translate3d(-50%, -50%, 0) scale(0.2) rotate(-6deg); opacity: 0; }
+      20% { transform: translate3d(-50%, -50%, 0) scale(1.15) rotate(2deg); opacity: 1; }
       40% { transform: translate3d(-50%, -50%, 0) scale(1) rotate(0deg); opacity: 1; }
-      80% { transform: translate3d(-50%, -50%, 0) scale(1.05); opacity: 1; }
-      100% { transform: translate3d(-50%, -75%, 0) scale(1.3); opacity: 0; }
+      80% { transform: translate3d(-50%, -50%, 0) scale(1.02); opacity: 1; }
+      100% { transform: translate3d(-50%, -75%, 0) scale(1.2); opacity: 0; }
     }
 
     #grid-board {
@@ -405,7 +401,6 @@
     .grid-cell.preview {
       background: rgba(255, 255, 255, 0.45) !important;
       outline: 2px solid #ffffff;
-      box-shadow: inset 0 0 10px rgba(255,255,255,0.7);
     }
 
     .grid-cell.line-hint {
@@ -414,8 +409,8 @@
     }
 
     @keyframes hintGlow {
-      0% { filter: brightness(1.2); box-shadow: 0 0 8px #facc15; }
-      100% { filter: brightness(2.2); box-shadow: 0 0 18px #ffea00; }
+      0% { filter: brightness(1.1); }
+      100% { filter: brightness(1.6); }
     }
 
     .grid-cell.filled {
@@ -424,12 +419,11 @@
 
     .blast-particle {
       position: absolute;
-      width: 9px;
-      height: 9px;
+      width: 8px;
+      height: 8px;
       border-radius: 3px;
       pointer-events: none;
       z-index: 250;
-      box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
       animation: particleFly 0.55s cubic-bezier(0.25, 1, 0.5, 1) forwards;
     }
 
@@ -445,14 +439,14 @@
       font-size: 24px;
       font-weight: 900;
       color: #ffd700;
-      text-shadow: 0 2px 4px #000, 0 0 12px rgba(255, 215, 0, 0.8);
+      text-shadow: 0 2px 4px #000;
       transform: translate(-50%, -50%);
       animation: flyUpToScore 0.75s cubic-bezier(0.22, 1, 0.36, 1) forwards;
     }
 
     @keyframes flyUpToScore {
       0% { transform: translate(-50%, -50%) scale(0.6); opacity: 0; }
-      25% { transform: translate(-50%, -90%) scale(1.3); opacity: 1; }
+      25% { transform: translate(-50%, -90%) scale(1.25); opacity: 1; }
       100% { transform: translate(-50%, -240px) scale(0.85); opacity: 0; }
     }
 
@@ -507,7 +501,7 @@
       width: 36px;
       height: 36px;
       border-radius: 6px;
-      box-shadow: var(--block-bevel), 0 14px 28px rgba(0,0,0,0.85);
+      box-shadow: var(--block-bevel), 0 12px 24px rgba(0,0,0,0.8);
     }
 
     #gameover-screen {
@@ -556,7 +550,7 @@
       font-size: 52px;
       font-weight: 900;
       color: #ffd700;
-      text-shadow: 0 4px 0 #b45309, 0 0 25px rgba(255, 215, 0, 0.5);
+      text-shadow: 0 4px 0 #b45309;
       line-height: 1;
     }
 
@@ -617,6 +611,7 @@
       opacity: 0;
       visibility: hidden;
       transition: opacity 0.2s ease;
+      touch-action: auto !important;
     }
 
     .modal-overlay.active {
@@ -635,6 +630,7 @@
       flex-direction: column;
       gap: 14px;
       box-shadow: 0 16px 36px rgba(0,0,0,0.85);
+      touch-action: auto !important;
     }
 
     .modal-title {
@@ -672,8 +668,10 @@
     }
 
     .rules-list {
-      max-height: 310px;
-      overflow-y: auto;
+      max-height: 270px;
+      overflow-y: scroll !important;
+      -webkit-overflow-scrolling: touch !important;
+      touch-action: pan-y !important;
       display: flex;
       flex-direction: column;
       gap: 10px;
@@ -696,6 +694,7 @@
       font-size: 13px;
       line-height: 1.4;
       font-weight: 600;
+      touch-action: pan-y !important;
     }
 
     .rule-num {
@@ -756,6 +755,7 @@
       font-weight: 800;
       cursor: pointer;
       font-size: 14px;
+      touch-action: auto !important;
     }
   </style>
 </head>
@@ -888,39 +888,31 @@
         <div class="rules-list">
           <div class="rule-item">
             <span class="rule-num">1</span>
-            <span><b>ड्रैग एंड ड्रॉप:</b> नीचे ट्रे से ब्लॉक उठाकर 8×8 ग्रिड में रखें।</span>
+            <span><b>ड्रैग एंड ड्रॉप:</b> ट्रे से ब्लॉक उठाकर 8×8 ग्रिड में रखें।</span>
           </div>
           <div class="rule-item">
             <span class="rule-num">2</span>
-            <span><b>लाइन ब्लास्ट:</b> पूरी रो या कॉलम भरने पर अपने आप ब्लास्ट हो जाएगी।</span>
+            <span><b>लाइन ब्लास्ट:</b> पूरी रो या कॉलम भरने पर तुरंत ब्लास्ट हो जाएगी।</span>
           </div>
           <div class="rule-item">
             <span class="rule-num">3</span>
-            <span><b>स्मार्ट असिस्ट (Lvl 1-4):</b> शुरुआती लेवल्स में आसान लाइन क्लीयरेंस और कॉम्बो मिलेंगे।</span>
+            <span><b>लेवल अपग्रेड:</b> या तो पूरा ग्रिड खाली करें या टारगेट स्कोर पूरा करें!</span>
           </div>
           <div class="rule-item">
             <span class="rule-num">4</span>
-            <span><b>येलो हिंट:</b> चाल चलने से पहले संभावित लाइनें पीले रंग में चमककर इशारा करेंगी।</span>
+            <span><b>मल्टीप्लायर:</b> Lvl 1: 1.0x, Lvl 2: 1.5x, Lvl 3: 2.0x, Lvl 4: 3.0x, Lvl 5+: 4.0x।</span>
           </div>
           <div class="rule-item">
             <span class="rule-num">5</span>
-            <span><b>कॉम्बो बोनस:</b> लगातार लाइन काटने पर भारी मल्टीप्लायर बोनस मिलेगा।</span>
+            <span><b>येलो हिंट:</b> लाइन पूरी होने से पहले पीले रंग में चमककर गाइड करेगी।</span>
           </div>
           <div class="rule-item">
             <span class="rule-num">6</span>
-            <span><b>बूस्टर मल्टीप्लायर:</b> Lvl 1: 1.0x, Lvl 2: 1.5x, Lvl 3: 2.0x, Lvl 4: 3.0x, Lvl 5+: 4.0x!</span>
-          </div>
-          <div class="rule-item">
-            <span class="rule-num">7</span>
-            <span><b>चैलेंज मोड (Lvl 5+):</b> लेवल 5 के बाद गेम और चुनौतीपूर्ण हो जाएगा।</span>
-          </div>
-          <div class="rule-item">
-            <span class="rule-num">8</span>
             <span><b>गेम ओवर:</b> जब किसी भी ब्लॉक के लिए ग्रिड में जगह न बचेगी।</span>
           </div>
         </div>
 
-        <button class="close-btn" onclick="closeRules()">GOT IT!</button>
+        <button class="close-btn" type="button" onclick="closeRules()">GOT IT!</button>
       </div>
     </div>
   </div>
@@ -1190,22 +1182,6 @@
           bassGain.connect(this.ctx.destination);
           bassOsc.start(now);
           bassOsc.stop(now + 0.13 + (tier * 0.04));
-
-          if (tier >= 2) {
-            const sparkle = this.ctx.createOscillator();
-            const sGain = this.ctx.createGain();
-            sparkle.type = 'sine';
-            sparkle.frequency.setValueAtTime(rootNotes[tier - 1] * 2.5, now);
-            sparkle.frequency.exponentialRampToValueAtTime(rootNotes[tier - 1] * 3.5, now + 0.18);
-
-            sGain.gain.setValueAtTime(0.32 * tier, now);
-            sGain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
-
-            sparkle.connect(sGain);
-            sGain.connect(this.ctx.destination);
-            sparkle.start(now);
-            sparkle.stop(now + 0.18);
-          }
         } catch(e) {}
       },
 
@@ -1265,19 +1241,14 @@
     window.addEventListener('touchstart', unlockAudio);
 
     const LEVEL_THEMES = [
-      { name: "Classic Neon", bg: 'radial-gradient(circle at 50% 25%, #231c44, #0d091a)', gridBg: '#141022', cellBg: '#1f1833', cellBorder: '#322752', bevel: 'inset 0 3px 2px rgba(255,255,255,0.5), inset 0 -4px 3px rgba(0,0,0,0.5)', palette: ['#38bdf8', '#fbbf24', '#f43f5e', '#4ade80', '#c084fc'], scoreGrad: 'linear-gradient(180deg, #ffffff 0%, #38bdf8 60%, #0284c7 100%)', scoreGlow: 'rgba(56, 189, 248, 0.7)' },
-      { name: "Emerald Forest", bg: 'radial-gradient(circle at 50% 25%, #064e3b, #022c22)', gridBg: '#042724', cellBg: '#0f4c42', cellBorder: '#14b8a6', bevel: 'inset 0 2px 4px #a7f3d0, inset 0 -3px 4px #022c22', palette: ['#34d399', '#a7f3d0', '#fde047', '#38bdf8', '#fb7185'], scoreGrad: 'linear-gradient(180deg, #ffffff 0%, #4ade80 50%, #16a34a 100%)', scoreGlow: 'rgba(74, 222, 128, 0.7)' },
-      { name: "Ruby Magma", bg: 'radial-gradient(circle at 50% 25%, #4c0519, #1f020a)', gridBg: '#350610', cellBg: '#6e1127', cellBorder: '#f43f5e', bevel: 'inset 0 3px 3px #fda4af, inset 0 -4px 4px #4c0519', palette: ['#fb7185', '#fda4af', '#facc15', '#fb923c', '#e879f9'], scoreGrad: 'linear-gradient(180deg, #fff 0%, #fb7185 50%, #e11d48 100%)', scoreGlow: 'rgba(251, 113, 133, 0.8)' },
-      { name: "Deep Ocean", bg: 'radial-gradient(circle at 50% 25%, #0c4a6e, #021727)', gridBg: '#041f33', cellBg: '#0e3d61', cellBorder: '#38bdf8', bevel: 'inset 0 3px 2px #7dd3fc, inset 0 -3px 4px #032b43', palette: ['#00f5d4', '#00bbf9', '#fee440', '#f15bb5', '#9b5de5'], scoreGrad: 'linear-gradient(180deg, #fff 0%, #00f5d4 50%, #0284c7 100%)', scoreGlow: 'rgba(0, 245, 212, 0.7)' },
-      { name: "Amethyst Royal", bg: 'radial-gradient(circle at 50% 25%, #3b0764, #150226)', gridBg: '#21043b', cellBg: '#4a0e7a', cellBorder: '#a855f7', bevel: 'inset 0 3px 2px #e9d5ff, inset 0 -4px 3px #1e0338', palette: ['#c084fc', '#e879f9', '#f472b6', '#38bdf8', '#facc15'], scoreGrad: 'linear-gradient(180deg, #fff 0%, #c084fc 50%, #9333ea 100%)', scoreGlow: 'rgba(192, 132, 252, 0.7)' },
-      { name: "Golden Pharaoh", bg: 'radial-gradient(circle at 50% 25%, #713f12, #241403)', gridBg: '#3d2006', cellBg: '#663908', cellBorder: '#eab308', bevel: 'inset 0 3px 2px #fef08a, inset 0 -4px 4px #2b1803', palette: ['#fef08a', '#facc15', '#fb923c', '#38bdf8', '#4ade80'], scoreGrad: 'linear-gradient(180deg, #ffffff 0%, #fde047 50%, #d97706 100%)', scoreGlow: 'rgba(253, 224, 71, 0.8)' },
-      { name: "Cyber Chrome", bg: 'radial-gradient(circle at 50% 25%, #581c87, #020617)', gridBg: '#130424', cellBg: '#2a0950', cellBorder: '#ec4899', bevel: 'inset 0 3px 1px #fff, inset 0 -3px 3px #ff007f', palette: ['#ff007f', '#00f0ff', '#ffe600', '#7928ca', '#00ff66'], scoreGrad: 'linear-gradient(180deg, #ff007f 0%, #00f0ff 100%)', scoreGlow: 'rgba(255, 0, 127, 0.8)' },
-      { name: "Frosted Arctic", bg: 'radial-gradient(circle at 50% 25%, #1e293b, #090d16)', gridBg: '#0d1522', cellBg: '#1e2d44', cellBorder: '#93c5fd', bevel: 'inset 0 2px 4px #ffffff, inset 0 -3px 3px #0f172a', palette: ['#e0f2fe', '#bae6fd', '#7dd3fc', '#f43f5e', '#facc15'], scoreGrad: 'linear-gradient(180deg, #ffffff 0%, #7dd3fc 60%, #38bdf8 100%)', scoreGlow: 'rgba(125, 211, 252, 0.8)' },
-      { name: "Sunset Blvd", bg: 'radial-gradient(circle at 50% 25%, #831843, #2a0314)', gridBg: '#40071d', cellBg: '#701036', cellBorder: '#fb7185', bevel: 'inset 0 3px 2px #ffd700, inset 0 -4px 3px #4a041c', palette: ['#ff758c', '#ff7eb3', '#ffa07a', '#ffd700', '#85e3ff'], scoreGrad: 'linear-gradient(180deg, #fff 0%, #ff758c 50%, #fb7185 100%)', scoreGlow: 'rgba(255, 117, 140, 0.8)' },
-      { name: "Galaxy Deluxe", bg: 'radial-gradient(circle at 50% 25%, #1e1b4b, #000000)', gridBg: '#09071c', cellBg: '#1c1547', cellBorder: '#ffd700', bevel: 'inset 0 4px 3px #ffffff, inset 0 -4px 5px #ffd700', palette: ['#ffd700', '#00ffff', '#ff00aa', '#76ff03', '#ffffff'], scoreGrad: 'linear-gradient(90deg, #ff007f, #ffe600, #00f0ff, #76ff03)', scoreGlow: 'rgba(255, 230, 0, 0.85)' }
+      { name: "Classic Neon", bg: 'radial-gradient(circle at 50% 25%, #1e183a, #0a0715)', gridBg: '#141022', cellBg: '#1f1833', cellBorder: '#322752', bevel: 'inset 0 2px 2px rgba(255,255,255,0.4), inset 0 -3px 2px rgba(0,0,0,0.4)', palette: ['#38bdf8', '#fbbf24', '#f43f5e', '#4ade80', '#c084fc'], scoreGrad: 'linear-gradient(180deg, #ffffff 0%, #38bdf8 60%, #0284c7 100%)', scoreGlow: 'rgba(56, 189, 248, 0.35)' },
+      { name: "Emerald Forest", bg: 'radial-gradient(circle at 50% 25%, #053b2d, #011d17)', gridBg: '#042724', cellBg: '#0f4c42', cellBorder: '#14b8a6', bevel: 'inset 0 2px 3px #a7f3d0, inset 0 -3px 3px #022c22', palette: ['#34d399', '#a7f3d0', '#fde047', '#38bdf8', '#fb7185'], scoreGrad: 'linear-gradient(180deg, #ffffff 0%, #4ade80 50%, #16a34a 100%)', scoreGlow: 'rgba(74, 222, 128, 0.35)' },
+      { name: "Ruby Magma", bg: 'radial-gradient(circle at 50% 25%, #3d0515, #160107)', gridBg: '#350610', cellBg: '#6e1127', cellBorder: '#f43f5e', bevel: 'inset 0 2px 2px #fda4af, inset 0 -3px 3px #4c0519', palette: ['#fb7185', '#fda4af', '#facc15', '#fb923c', '#e879f9'], scoreGrad: 'linear-gradient(180deg, #fff 0%, #fb7185 50%, #e11d48 100%)', scoreGlow: 'rgba(251, 113, 133, 0.35)' },
+      { name: "Deep Ocean", bg: 'radial-gradient(circle at 50% 25%, #083750, #01111d)', gridBg: '#041f33', cellBg: '#0e3d61', cellBorder: '#38bdf8', bevel: 'inset 0 2px 2px #7dd3fc, inset 0 -3px 3px #032b43', palette: ['#00f5d4', '#00bbf9', '#fee440', '#f15bb5', '#9b5de5'], scoreGrad: 'linear-gradient(180deg, #fff 0%, #00f5d4 50%, #0284c7 100%)', scoreGlow: 'rgba(0, 245, 212, 0.35)' },
+      { name: "Amethyst Royal", bg: 'radial-gradient(circle at 50% 25%, #2c054b, #10011c)', gridBg: '#21043b', cellBg: '#4a0e7a', cellBorder: '#a855f7', bevel: 'inset 0 2px 2px #e9d5ff, inset 0 -3px 2px #1e0338', palette: ['#c084fc', '#e879f9', '#f472b6', '#38bdf8', '#facc15'], scoreGrad: 'linear-gradient(180deg, #fff 0%, #c084fc 50%, #9333ea 100%)', scoreGlow: 'rgba(192, 132, 252, 0.35)' }
     ];
 
-    // 4-ब्लॉक क्लासिक L-शेप्स (चारों ओरिएंटेशन)
+    // 4-ब्लॉक L-शेप्स (क्लासिक)
     const FOUR_BLOCK_L_SHAPES = [
       [[1, 0], [1, 0], [1, 1]],
       [[0, 1], [0, 1], [1, 1]],
@@ -1289,18 +1260,17 @@
       [[1, 0, 0], [1, 1, 1]]
     ];
 
-    // आसान व तेज़ क्लीयरिंग ब्लॉक्स
-    const EASY_SHAPES = [
+    // बेसिक नॉन-L आसान ब्लॉक्स
+    const BASIC_SHAPES = [
       [[1, 1, 1]], [[1], [1], [1]], 
       [[1, 1, 1, 1]], [[1], [1], [1], [1]], 
       [[1, 1]], [[1], [1]], 
       [[1, 1], [1, 1]],
       [[1]],
-      ...FOUR_BLOCK_L_SHAPES,
       [[1, 1, 1], [1, 1, 1]]
     ];
 
-    // 5-ब्लॉक वाली बड़ी L (केवल उच्च लेवल्स के लिए)
+    // 5-ब्लॉक बड़ी L
     const BIG_FIVE_L_SHAPES = [
       [[1, 0, 0], [1, 0, 0], [1, 1, 1]],
       [[0, 0, 1], [0, 0, 1], [1, 1, 1]], 
@@ -1308,22 +1278,23 @@
       [[1, 1, 1], [0, 0, 1], [0, 0, 1]]
     ];
 
-    const HARD_SHAPES = [
+    // हार्ड नॉन-L ब्लॉक्स
+    const HARD_NON_L_SHAPES = [
       [[0, 1, 0], [1, 1, 1], [0, 1, 0]],
       [[1, 1, 1], [1, 1, 1], [1, 1, 1]],
       [[1, 1, 1], [1, 0, 1]], 
-      [[1, 0, 1], [1, 1, 1]],
-      ...BIG_FIVE_L_SHAPES
+      [[1, 0, 1], [1, 1, 1]]
     ];
 
-    // लेवल थ्रेशोल्ड्स (लेवल 4 2000+ पर, लेवल 5 3000+ पर)
-    const LEVEL_SCORE_THRESHOLDS = [0, 800, 1500, 2200, 3200, 4800, 7000, 10000, 15000, 25000];
+    const LEVEL_SCORE_TARGETS = [0, 3000, 5000, 8000, 12000, 17000, 23000, 30000, 40000, 55000];
 
     let currentScore = 0;
     let highScore = parseInt(localStorage.getItem('block_blast_high')) || 0;
     let hadBrokenHighScore = false;
     let currentLevel = 1;
     let streakCount = 0;
+    let isTransitioningLevel = false;
+
     let grid = Array(8).fill().map(() => Array(8).fill(null));
     let availableBlocks = [null, null, null];
     let isGameRunning = false;
@@ -1350,18 +1321,21 @@
     const commentaryTitle = document.getElementById('commentary-title');
     const commentaryPoints = document.getElementById('commentary-points');
     const dragProxy = document.getElementById('drag-proxy');
+    const settingsModal = document.getElementById('settings-modal');
+    const rulesModal = document.getElementById('rules-modal');
+    const inGameSettings = document.getElementById('in-game-settings');
+    const modalCloseBtn = document.getElementById('modal-close-btn');
 
     homeBestScore.innerText = highScore;
     gameBestScore.innerText = highScore;
     overBestScore.innerText = highScore;
 
-    // आपका कस्टम मल्टीप्लायर फ़ॉर्मूला
     function getLevelMultiplier() {
       if (currentLevel === 1) return 1.0;
       if (currentLevel === 2) return 1.5;
       if (currentLevel === 3) return 2.0;
       if (currentLevel === 4) return 3.0;
-      return 4.0; // Level 5 और ऊपर
+      return 4.0;
     }
 
     function applyLevelTheme(level) {
@@ -1396,6 +1370,7 @@
       AudioEngine.init();
       isGameRunning = true;
       hadBrokenHighScore = false;
+      isTransitioningLevel = false;
       gridBoard.classList.remove('freeze-gray');
       AudioEngine.startBGM();
       homeScreen.classList.add('hidden');
@@ -1418,9 +1393,9 @@
       scoreDisplay.style.transform = 'scale(1.15)';
       setTimeout(() => scoreDisplay.style.transform = 'scale(1)', 120);
 
-      const prevThreshold = LEVEL_SCORE_THRESHOLDS[currentLevel - 1] || 0;
-      const nextThreshold = LEVEL_SCORE_THRESHOLDS[currentLevel] || (prevThreshold + 1000);
-      const progressPct = Math.min(Math.max(((currentScore - prevThreshold) / (nextThreshold - prevThreshold)) * 100, 0), 100);
+      const prevTarget = LEVEL_SCORE_TARGETS[currentLevel - 1] || 0;
+      const curTarget = LEVEL_SCORE_TARGETS[currentLevel] || (prevTarget + 5000);
+      const progressPct = Math.min(Math.max(((currentScore - prevTarget) / (curTarget - prevTarget)) * 100, 0), 100);
       levelProgressBar.style.width = `${progressPct}%`;
 
       if (currentScore > highScore) {
@@ -1432,8 +1407,8 @@
         overBestScore.innerText = highScore;
       }
 
-      if (currentLevel < 10 && currentScore >= LEVEL_SCORE_THRESHOLDS[currentLevel]) {
-        triggerLevelUp("SCORE GOAL!");
+      if (!isTransitioningLevel && currentLevel < 10 && currentScore >= LEVEL_SCORE_TARGETS[currentLevel]) {
+        triggerLevelUp("SCORE GOAL ACHIEVED!");
       }
     }
 
@@ -1476,9 +1451,7 @@
       }
     }
 
-    // स्मार्ट ब्लॉक जनरेशन (लेवल 1-4 में लाइन ब्लास्ट की मदद करना)
     function findSmartCompleterShape() {
-      // 1. देखें कि क्या कोई रो लगभग पूरी भर चुकी है
       for (let r = 0; r < 8; r++) {
         let emptyCount = 0;
         for (let c = 0; c < 8; c++) if (grid[r][c] === null) emptyCount++;
@@ -1486,7 +1459,6 @@
         if (emptyCount === 2) return [[1, 1]];
         if (emptyCount === 3) return [[1, 1, 1]];
       }
-      // 2. देखें कि क्या कोई कॉलम लगभग पूरी भर चुकी है
       for (let c = 0; c < 8; c++) {
         let emptyCount = 0;
         for (let r = 0; r < 8; r++) if (grid[r][c] === null) emptyCount++;
@@ -1494,37 +1466,40 @@
         if (emptyCount === 2) return [[1], [1]];
         if (emptyCount === 3) return [[1], [1], [1]];
       }
-      // अगर ग्रिड बहुत खाली है, तो कॉम्बो बनाने के लिए 3x3 या 2x2 दें
-      let filledTotal = 0;
-      for (let r = 0; r < 8; r++) {
-        for (let c = 0; c < 8; c++) if (grid[r][c] !== null) filledTotal++;
-      }
-      if (filledTotal < 12) {
-        return Math.random() < 0.5 ? [[1, 1, 1], [1, 1, 1], [1, 1, 1]] : [[1, 1], [1, 1]];
-      }
       return null;
     }
 
+    // L-शेप्स की फ़्रीक्वेंसी को नियंत्रित (7/10 दर) करने वाला स्पॉनर
     function spawnBlocks() {
       const theme = LEVEL_THEMES[(currentLevel - 1) % LEVEL_THEMES.length];
-      
-      let pool;
-      if (currentLevel <= 4) {
-        pool = EASY_SHAPES;
-      } else {
-        pool = [...EASY_SHAPES, ...HARD_SHAPES];
-      }
+      let lShapeCountThisBatch = 0;
 
       for (let i = 0; i < 3; i++) {
         let chosenShape = null;
 
-        // लेवल 1 से 4 में कम से कम 1 स्लॉट में स्मार्ट कम्प्लीटर ब्लॉक दें
         if (currentLevel <= 4 && i === 0) {
           chosenShape = findSmartCompleterShape();
         }
 
         if (!chosenShape) {
-          chosenShape = pool[Math.floor(Math.random() * pool.length)];
+          // L-शेप्स की आने की संभावना 70% तक सीमित, और एक बैच में अधिकतम 1 L-ब्लॉक
+          const allowL = (lShapeCountThisBatch === 0) && (Math.random() < 0.28);
+
+          if (allowL) {
+            if (currentLevel >= 6 && Math.random() < 0.35) {
+              chosenShape = BIG_FIVE_L_SHAPES[Math.floor(Math.random() * BIG_FIVE_L_SHAPES.length)];
+            } else {
+              chosenShape = FOUR_BLOCK_L_SHAPES[Math.floor(Math.random() * FOUR_BLOCK_L_SHAPES.length)];
+            }
+            lShapeCountThisBatch++;
+          } else {
+            if (currentLevel >= 6) {
+              const pool = [...BASIC_SHAPES, ...HARD_NON_L_SHAPES];
+              chosenShape = pool[Math.floor(Math.random() * pool.length)];
+            } else {
+              chosenShape = BASIC_SHAPES[Math.floor(Math.random() * BASIC_SHAPES.length)];
+            }
+          }
         }
 
         const randColor = theme.palette[Math.floor(Math.random() * theme.palette.length)];
@@ -1567,6 +1542,7 @@
 
       container.onpointerdown = (e) => {
         e.preventDefault();
+        e.stopPropagation();
         startDragging(e.clientX, e.clientY, slotIdx);
       };
 
@@ -1576,9 +1552,9 @@
     function startDragging(clientX, clientY, slotIdx) {
       if (!availableBlocks[slotIdx]) return;
       
-      // अगर पहले से कोई ड्रैग अधूरा रह गया हो तो उसे सुरक्षित रीसेट करें
       if (isDragging && dragData) {
         renderMiniBlock(dragData.slotIdx);
+        cleanupDragListeners();
       }
 
       AudioEngine.playPick();
@@ -1620,6 +1596,15 @@
       window.addEventListener('pointercancel', onGlobalPointerUp, { passive: false });
     }
 
+    function cleanupDragListeners() {
+      window.removeEventListener('pointermove', onGlobalPointerMove);
+      window.removeEventListener('pointerup', onGlobalPointerUp);
+      window.removeEventListener('pointercancel', onGlobalPointerUp);
+      isDragging = false;
+      dragProxy.style.display = 'none';
+      clearPreviewAndHints();
+    }
+
     function onGlobalPointerMove(e) {
       if (!isDragging || !dragData) return;
       e.preventDefault();
@@ -1642,42 +1627,38 @@
       if (!isDragging || !dragData) return;
       e.preventDefault();
 
-      window.removeEventListener('pointermove', onGlobalPointerMove);
-      window.removeEventListener('pointerup', onGlobalPointerUp);
-      window.removeEventListener('pointercancel', onGlobalPointerUp);
+      const currentSlot = dragData.slotIdx;
+      const currentShape = dragData.shape;
+      const currentColor = dragData.color;
 
-      isDragging = false;
-      dragProxy.style.display = 'none';
-      clearPreviewAndHints();
+      cleanupDragListeners();
 
       const coords = getTargetGridCoords(e.clientX, e.clientY - FINGER_OFFSET_Y);
       let placed = false;
 
-      if (coords && canPlace(dragData.shape, coords.r, coords.c)) {
+      if (coords && canPlace(currentShape, coords.r, coords.c)) {
         let blockCellCount = 0;
-        for (let r = 0; r < dragData.shape.length; r++) {
-          for (let c = 0; c < dragData.shape[0].length; c++) {
-            if (dragData.shape[r][c]) {
-              grid[coords.r + r][coords.c + c] = dragData.color;
+        for (let r = 0; r < currentShape.length; r++) {
+          for (let c = 0; c < currentShape[0].length; c++) {
+            if (currentShape[r][c]) {
+              grid[coords.r + r][coords.c + c] = currentColor;
               blockCellCount++;
             }
           }
         }
 
         AudioEngine.playPlace();
-        updateScore(Math.round(blockCellCount * 10 * getLevelMultiplier()));
-
-        availableBlocks[dragData.slotIdx] = null;
+        availableBlocks[currentSlot] = null;
         placed = true;
         renderGrid();
+        
+        updateScore(Math.round(blockCellCount * 10 * getLevelMultiplier()));
         checkAndClearLines();
       }
 
-      // अगर सही जगह नहीं रखा गया, तो ब्लॉक हमेशा अपने स्लॉट में वापस आएगा (कभी गायब नहीं होगा)
       if (!placed) {
-        renderMiniBlock(dragData.slotIdx);
+        renderMiniBlock(currentSlot);
       } else {
-        // अगर तीनों ब्लॉक खाली हो गए, तो तुरंत 3 नए ब्लॉक आएँगे
         if (availableBlocks[0] === null && availableBlocks[1] === null && availableBlocks[2] === null) {
           spawnBlocks();
         }
@@ -1778,7 +1759,7 @@
       const x = c * cellSize + cellSize / 2;
       const y = r * cellSize + cellSize / 2;
 
-      for (let i = 0; i < 5; i++) {
+      for (let i = 0; i < 4; i++) {
         const p = document.createElement('div');
         p.className = 'blast-particle';
         p.style.backgroundColor = color || '#ffd700';
@@ -1786,7 +1767,7 @@
         p.style.top = `${y}px`;
 
         const angle = Math.random() * Math.PI * 2;
-        const dist = 25 + Math.random() * 45;
+        const dist = 22 + Math.random() * 40;
         p.style.setProperty('--tx', `${Math.cos(angle) * dist}px`);
         p.style.setProperty('--ty', `${Math.sin(angle) * dist}px`);
 
@@ -1815,7 +1796,6 @@
 
       if (totalLines > 0) {
         streakCount++;
-        // मल्टी-लाइन बोनस + स्ट्रीक बोनस
         const baseScore = [0, 100, 280, 600, 1100][Math.min(totalLines, 4)];
         const streakBonus = (streakCount > 1) ? (streakCount * 50) : 0;
         
@@ -1882,8 +1862,8 @@
         renderGrid();
 
         const isGridCompletelyBlank = grid.every(row => row.every(cell => cell === null));
-        if (isGridCompletelyBlank) {
-          triggerLevelUp("PERFECT CLEAR!");
+        if (isGridCompletelyBlank && !isTransitioningLevel && currentLevel < 10) {
+          triggerLevelUp("PERFECT BOARD CLEAR!");
         }
 
       } else {
@@ -1893,24 +1873,27 @@
     }
 
     function triggerLevelUp(customTitle = "LEVEL UP!") {
-      if (currentLevel < 10) {
-        currentLevel++;
-        applyLevelTheme(currentLevel);
-        AudioEngine.playLevelUp();
-        
-        const levelBonus = currentLevel * 300;
-        updateScore(levelBonus);
-        
-        triggerCommentary(
-          customTitle, 
-          "amazing", 
-          `LVL ${currentLevel} • BOOST ${getLevelMultiplier().toFixed(1)}x (+${levelBonus} PTS)`
-        );
-        
-        spawnBlocks();
-      } else {
-        triggerCommentary("UNBELIEVABLE!", "unbelievable", "LEVEL 10 MASTER!");
-      }
+      isTransitioningLevel = true;
+      currentLevel++;
+      applyLevelTheme(currentLevel);
+      AudioEngine.playLevelUp();
+      
+      triggerCommentary(
+        customTitle, 
+        "amazing", 
+        `LVL ${currentLevel} UNLOCKED! (${getLevelMultiplier().toFixed(1)}x BOOST)`
+      );
+
+      const prevTarget = LEVEL_SCORE_TARGETS[currentLevel - 1] || 0;
+      const curTarget = LEVEL_SCORE_TARGETS[currentLevel] || (prevTarget + 5000);
+      const progressPct = Math.min(Math.max(((currentScore - prevTarget) / (curTarget - prevTarget)) * 100, 0), 100);
+      levelProgressBar.style.width = `${progressPct}%`;
+      
+      spawnBlocks();
+
+      setTimeout(() => {
+        isTransitioningLevel = false;
+      }, 1200);
     }
 
     function checkGameOver() {
@@ -1951,11 +1934,6 @@
       AudioEngine.speakGameOver(currentScore, hadBrokenHighScore);
     }
 
-    const settingsModal = document.getElementById('settings-modal');
-    const rulesModal = document.getElementById('rules-modal');
-    const inGameSettings = document.getElementById('in-game-settings');
-    const modalCloseBtn = document.getElementById('modal-close-btn');
-
     function openSettings(from) {
       AudioEngine.playClick();
       settingsModal.classList.add('active');
@@ -1980,8 +1958,20 @@
 
     function closeRules() {
       AudioEngine.playClick();
-      rulesModal.classList.add('active');
+      rulesModal.classList.remove('active');
     }
+
+    rulesModal.addEventListener('click', (e) => {
+      if (e.target === rulesModal) {
+        closeRules();
+      }
+    });
+
+    settingsModal.addEventListener('click', (e) => {
+      if (e.target === settingsModal) {
+        closeSettings();
+      }
+    });
 
     function restartGame() {
       closeSettings();

@@ -36,9 +36,9 @@
 
     #game-container {
       width: 100vw;
-      max-width: 420px;
+      max-width: 480px;
       height: 100dvh;
-      max-height: 840px;
+      max-height: 950px;
       background: var(--bg-gradient);
       position: relative;
       display: flex;
@@ -896,7 +896,7 @@
           </div>
           <div class="rule-item">
             <span class="rule-num">3</span>
-            <span><b>लेवल अपग्रेड:</b> 3,000 पॉइंट्स पूरे होते ही तुरंत लेवल 2 आ जाएगा!</span>
+            <span><b>स्मार्ट असिस्ट (Lvl 1-4):</b> शुरुआती लेवल्स में आसान लाइन क्लीयरेंस और कॉम्बो मिलेंगे।</span>
           </div>
           <div class="rule-item">
             <span class="rule-num">4</span>
@@ -904,15 +904,15 @@
           </div>
           <div class="rule-item">
             <span class="rule-num">5</span>
-            <span><b>कॉम्बो बोनस:</b> लगातार लाइन काटने पर भारी मल्टीप्लायर पॉइंट्स मिलते हैं।</span>
+            <span><b>कॉम्बो बोनस:</b> लगातार लाइन काटने पर भारी मल्टीप्लायर बोनस मिलेगा।</span>
           </div>
           <div class="rule-item">
             <span class="rule-num">6</span>
-            <span><b>बूस्टर मल्टीप्लायर:</b> हर नए लेवल पर 1.5x, 2.0x बूस्टर अनलॉक होंगे।</span>
+            <span><b>बूस्टर मल्टीप्लायर:</b> Lvl 1: 1.0x, Lvl 2: 1.5x, Lvl 3: 2.0x, Lvl 4: 3.0x, Lvl 5+: 4.0x!</span>
           </div>
           <div class="rule-item">
             <span class="rule-num">7</span>
-            <span><b>1 लाख स्कोर चैलेंज:</b> 50,000 आसान है, 1 लाख के लिए उच्च लेवल में टिके रहें।</span>
+            <span><b>चैलेंज मोड (Lvl 5+):</b> लेवल 5 के बाद गेम और चुनौतीपूर्ण हो जाएगा।</span>
           </div>
           <div class="rule-item">
             <span class="rule-num">8</span>
@@ -958,20 +958,14 @@
         "unbelievable": "https://files.catbox.moe/0fezxy.mp3"
       },
 
-      // 100% सटीक मैपिंग: ऑडियो लिंक और उस फ़ाइल के असली डायलॉग
       gameOverFiles: {
-        // 1 से 5: सांत्वना व सामान्य गेम ओवर
         "1": { text: "NICE TRY, DON'T GIVE UP, TRY AGAIN", url: "https://files.catbox.moe/2ubg6w.mp3" },
         "2": { text: "NICE TRY, BETTER LUCK NEXT TIME", url: "https://files.catbox.moe/t0g5wb.mp3" },
         "3": { text: "GOOD EFFORT, YOU CAN DO BETTER", url: "https://files.catbox.moe/xd2eyi.mp3" },
         "4": { text: "OH NO, LET'S TRY ONE MORE TIME", url: "https://files.catbox.moe/e9oksd.mp3" },
         "5": { text: "OOPS, COME ON, YOU GOT THIS", url: "https://files.catbox.moe/nwfmw2.mp3" },
-        
-        // 6 और 7: अच्छा स्कोर
         "6": { text: "SPECTACULAR GAME, THAT WAS CLOSE", url: "https://files.catbox.moe/clo7c1.mp3" },
         "7": { text: "AWESOME RUN, WELL PLAYED", url: "https://files.catbox.moe/5lrc20.mp3" },
-        
-        // 8, 9, 10: हाई स्कोर और नए रिकॉर्ड
         "8": { text: "NEW HIGH SCORE, FANTASTIC JOB", url: "https://files.catbox.moe/a8kkmx.mp3" },
         "9": { text: "NEW RECORD, YOU PLAYED IT SO WELL", url: "https://files.catbox.moe/wqt62g.mp3" },
         "10": { text: "UNBELIEVABLE, THAT'S A NEW PERSONAL BEST", url: "https://files.catbox.moe/1rvyo0.mp3" }
@@ -1027,35 +1021,24 @@
         }
       },
 
-      // आपके द्वारा सेट किया गया सटीक स्कोर लॉजिक
       speakGameOver(score, isNewHighScore) {
         let pickedKey;
-
-        // नियम 1: अगर नया हाई-स्कोर या पर्सनल बेस्ट बना
         if (isNewHighScore && score >= 2500) {
           const recordPool = ["8", "9", "10"];
           pickedKey = recordPool[Math.floor(Math.random() * recordPool.length)];
-        }
-        // नियम 2: अगर स्कोर 2500 से कम है (लेवल 1 पार नहीं कर पाया)
-        else if (score < 2500) {
-          const lowPool = ["4", "5"]; // Oh no (4) या Oops (5)
+        } else if (score < 2500) {
+          const lowPool = ["4", "5"];
           pickedKey = lowPool[Math.floor(Math.random() * lowPool.length)];
-        }
-        // नियम 3: बहुत बड़ा स्कोर (20,000+)
-        else if (score >= 20000) {
-          const highPool = ["6", "7"]; // Spectacular game (6) या Awesome run (7)
+        } else if (score >= 20000) {
+          const highPool = ["6", "7"];
           pickedKey = highPool[Math.floor(Math.random() * highPool.length)];
-        }
-        // नियम 4: 2,500 से 20,000 तक (लेवल पार करने पर Nice Try / Good Effort)
-        else {
-          const midPool = ["1", "2", "3"]; // Nice try don't give up (1), Nice try better luck (2), Good effort (3)
+        } else {
+          const midPool = ["1", "2", "3"];
           pickedKey = midPool[Math.floor(Math.random() * midPool.length)];
         }
 
         const item = this.gameOverFiles[pickedKey];
         const feedbackEl = document.getElementById('gameover-feedback-text');
-        
-        // जो आवाज़ बजेगी, स्क्रीन पर अक्षरशः वही शब्द दिखेंगे
         feedbackEl.innerText = item.text;
 
         this.init();
@@ -1294,40 +1277,47 @@
       { name: "Galaxy Deluxe", bg: 'radial-gradient(circle at 50% 25%, #1e1b4b, #000000)', gridBg: '#09071c', cellBg: '#1c1547', cellBorder: '#ffd700', bevel: 'inset 0 4px 3px #ffffff, inset 0 -4px 5px #ffd700', palette: ['#ffd700', '#00ffff', '#ff00aa', '#76ff03', '#ffffff'], scoreGrad: 'linear-gradient(90deg, #ff007f, #ffe600, #00f0ff, #76ff03)', scoreGlow: 'rgba(255, 230, 0, 0.85)' }
     ];
 
-    const LEVEL_1_SHAPES = [
+    // 4-ब्लॉक क्लासिक L-शेप्स (चारों ओरिएंटेशन)
+    const FOUR_BLOCK_L_SHAPES = [
+      [[1, 0], [1, 0], [1, 1]],
+      [[0, 1], [0, 1], [1, 1]],
+      [[1, 1, 1], [1, 0, 0]],
+      [[1, 1, 1], [0, 0, 1]],
+      [[1, 1], [1, 0], [1, 0]],
+      [[1, 1], [0, 1], [0, 1]],
+      [[0, 0, 1], [1, 1, 1]],
+      [[1, 0, 0], [1, 1, 1]]
+    ];
+
+    // आसान व तेज़ क्लीयरिंग ब्लॉक्स
+    const EASY_SHAPES = [
       [[1, 1, 1]], [[1], [1], [1]], 
       [[1, 1, 1, 1]], [[1], [1], [1], [1]], 
       [[1, 1]], [[1], [1]], 
       [[1, 1], [1, 1]],
-      [[1, 0], [1, 1]], [[0, 1], [1, 1]],
-      [[1, 1], [1, 0]], [[1, 1], [0, 1]], 
+      [[1]],
+      ...FOUR_BLOCK_L_SHAPES,
+      [[1, 1, 1], [1, 1, 1]]
+    ];
+
+    // 5-ब्लॉक वाली बड़ी L (केवल उच्च लेवल्स के लिए)
+    const BIG_FIVE_L_SHAPES = [
       [[1, 0, 0], [1, 0, 0], [1, 1, 1]],
       [[0, 0, 1], [0, 0, 1], [1, 1, 1]], 
       [[1, 1, 1], [1, 0, 0], [1, 0, 0]], 
-      [[1, 1, 1], [0, 0, 1], [0, 0, 1]], 
-      [[1, 1, 1], [1, 1, 1]],
-      [[1, 1], [1, 1], [1, 1]],
-      [[1]] 
-    ];
-
-    const LEVEL_2_TO_5_SHAPES = [
-      ...LEVEL_1_SHAPES,
-      [[1, 1, 1], [1, 1, 1], [1, 1, 1]],
-      [[1, 1, 1], [0, 1, 0]], [[0, 1, 0], [1, 1, 1]],
-      [[1, 0], [1, 1], [1, 0]], [[0, 1], [1, 1], [0, 1]], 
-      [[1, 1, 0], [0, 1, 1]], [[0, 1, 1], [1, 1, 0]],
-      [[1, 0], [1, 1], [0, 1]], [[0, 1], [1, 1], [1, 0]],
-      [[1, 1, 1, 1, 1]], [[1], [1], [1], [1], [1]]
+      [[1, 1, 1], [0, 0, 1], [0, 0, 1]]
     ];
 
     const HARD_SHAPES = [
       [[0, 1, 0], [1, 1, 1], [0, 1, 0]],
       [[1, 1, 1], [1, 1, 1], [1, 1, 1]],
       [[1, 1, 1], [1, 0, 1]], 
-      [[1, 0, 1], [1, 1, 1]]
+      [[1, 0, 1], [1, 1, 1]],
+      ...BIG_FIVE_L_SHAPES
     ];
 
-    const LEVEL_SCORE_THRESHOLDS = [0, 3000, 8000, 15000, 24000, 35000, 48000, 63000, 80000, 100000];
+    // लेवल थ्रेशोल्ड्स (लेवल 4 2000+ पर, लेवल 5 3000+ पर)
+    const LEVEL_SCORE_THRESHOLDS = [0, 800, 1500, 2200, 3200, 4800, 7000, 10000, 15000, 25000];
 
     let currentScore = 0;
     let highScore = parseInt(localStorage.getItem('block_blast_high')) || 0;
@@ -1365,8 +1355,13 @@
     gameBestScore.innerText = highScore;
     overBestScore.innerText = highScore;
 
+    // आपका कस्टम मल्टीप्लायर फ़ॉर्मूला
     function getLevelMultiplier() {
-      return 1.0 + (currentLevel - 1) * 0.5;
+      if (currentLevel === 1) return 1.0;
+      if (currentLevel === 2) return 1.5;
+      if (currentLevel === 3) return 2.0;
+      if (currentLevel === 4) return 3.0;
+      return 4.0; // Level 5 और ऊपर
     }
 
     function applyLevelTheme(level) {
@@ -1424,7 +1419,7 @@
       setTimeout(() => scoreDisplay.style.transform = 'scale(1)', 120);
 
       const prevThreshold = LEVEL_SCORE_THRESHOLDS[currentLevel - 1] || 0;
-      const nextThreshold = LEVEL_SCORE_THRESHOLDS[currentLevel] || (prevThreshold + 10000);
+      const nextThreshold = LEVEL_SCORE_THRESHOLDS[currentLevel] || (prevThreshold + 1000);
       const progressPct = Math.min(Math.max(((currentScore - prevThreshold) / (nextThreshold - prevThreshold)) * 100, 0), 100);
       levelProgressBar.style.width = `${progressPct}%`;
 
@@ -1481,20 +1476,59 @@
       }
     }
 
+    // स्मार्ट ब्लॉक जनरेशन (लेवल 1-4 में लाइन ब्लास्ट की मदद करना)
+    function findSmartCompleterShape() {
+      // 1. देखें कि क्या कोई रो लगभग पूरी भर चुकी है
+      for (let r = 0; r < 8; r++) {
+        let emptyCount = 0;
+        for (let c = 0; c < 8; c++) if (grid[r][c] === null) emptyCount++;
+        if (emptyCount === 1) return [[1]];
+        if (emptyCount === 2) return [[1, 1]];
+        if (emptyCount === 3) return [[1, 1, 1]];
+      }
+      // 2. देखें कि क्या कोई कॉलम लगभग पूरी भर चुकी है
+      for (let c = 0; c < 8; c++) {
+        let emptyCount = 0;
+        for (let r = 0; r < 8; r++) if (grid[r][c] === null) emptyCount++;
+        if (emptyCount === 1) return [[1]];
+        if (emptyCount === 2) return [[1], [1]];
+        if (emptyCount === 3) return [[1], [1], [1]];
+      }
+      // अगर ग्रिड बहुत खाली है, तो कॉम्बो बनाने के लिए 3x3 या 2x2 दें
+      let filledTotal = 0;
+      for (let r = 0; r < 8; r++) {
+        for (let c = 0; c < 8; c++) if (grid[r][c] !== null) filledTotal++;
+      }
+      if (filledTotal < 12) {
+        return Math.random() < 0.5 ? [[1, 1, 1], [1, 1, 1], [1, 1, 1]] : [[1, 1], [1, 1]];
+      }
+      return null;
+    }
+
     function spawnBlocks() {
       const theme = LEVEL_THEMES[(currentLevel - 1) % LEVEL_THEMES.length];
-      let pool = LEVEL_1_SHAPES;
-
-      if (currentLevel >= 6) {
-        pool = [...LEVEL_2_TO_5_SHAPES, ...HARD_SHAPES];
-      } else if (currentLevel >= 2) {
-        pool = LEVEL_2_TO_5_SHAPES;
+      
+      let pool;
+      if (currentLevel <= 4) {
+        pool = EASY_SHAPES;
+      } else {
+        pool = [...EASY_SHAPES, ...HARD_SHAPES];
       }
 
       for (let i = 0; i < 3; i++) {
-        const randShape = pool[Math.floor(Math.random() * pool.length)];
+        let chosenShape = null;
+
+        // लेवल 1 से 4 में कम से कम 1 स्लॉट में स्मार्ट कम्प्लीटर ब्लॉक दें
+        if (currentLevel <= 4 && i === 0) {
+          chosenShape = findSmartCompleterShape();
+        }
+
+        if (!chosenShape) {
+          chosenShape = pool[Math.floor(Math.random() * pool.length)];
+        }
+
         const randColor = theme.palette[Math.floor(Math.random() * theme.palette.length)];
-        availableBlocks[i] = { shape: randShape, color: randColor };
+        availableBlocks[i] = { shape: chosenShape, color: randColor };
         renderMiniBlock(i);
       }
     }
@@ -1541,6 +1575,12 @@
 
     function startDragging(clientX, clientY, slotIdx) {
       if (!availableBlocks[slotIdx]) return;
+      
+      // अगर पहले से कोई ड्रैग अधूरा रह गया हो तो उसे सुरक्षित रीसेट करें
+      if (isDragging && dragData) {
+        renderMiniBlock(dragData.slotIdx);
+      }
+
       AudioEngine.playPick();
 
       const bData = availableBlocks[slotIdx];
@@ -1625,7 +1665,7 @@
         }
 
         AudioEngine.playPlace();
-        updateScore(blockCellCount * 10);
+        updateScore(Math.round(blockCellCount * 10 * getLevelMultiplier()));
 
         availableBlocks[dragData.slotIdx] = null;
         placed = true;
@@ -1633,9 +1673,11 @@
         checkAndClearLines();
       }
 
+      // अगर सही जगह नहीं रखा गया, तो ब्लॉक हमेशा अपने स्लॉट में वापस आएगा (कभी गायब नहीं होगा)
       if (!placed) {
         renderMiniBlock(dragData.slotIdx);
       } else {
+        // अगर तीनों ब्लॉक खाली हो गए, तो तुरंत 3 नए ब्लॉक आएँगे
         if (availableBlocks[0] === null && availableBlocks[1] === null && availableBlocks[2] === null) {
           spawnBlocks();
         }
@@ -1773,8 +1815,9 @@
 
       if (totalLines > 0) {
         streakCount++;
-        const baseScore = [0, 100, 250, 500, 900][Math.min(totalLines, 4)];
-        const streakBonus = (streakCount > 1) ? (streakCount * 30) : 0;
+        // मल्टी-लाइन बोनस + स्ट्रीक बोनस
+        const baseScore = [0, 100, 280, 600, 1100][Math.min(totalLines, 4)];
+        const streakBonus = (streakCount > 1) ? (streakCount * 50) : 0;
         
         const booster = getLevelMultiplier();
         const totalBonus = Math.round((baseScore + streakBonus) * booster);
@@ -1905,7 +1948,6 @@
       finalScoreVal.innerText = currentScore;
       overBestScore.innerText = highScore;
 
-      // 100% सटीक वॉइस और मैचिंग टेक्स्ट
       AudioEngine.speakGameOver(currentScore, hadBrokenHighScore);
     }
 

@@ -23,6 +23,7 @@
       padding: 0;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       touch-action: none;
+      -webkit-touch-callout: none;
     }
 
     body {
@@ -32,6 +33,7 @@
       align-items: center;
       min-height: 100vh;
       overflow: hidden;
+      touch-action: none;
     }
 
     #game-container {
@@ -48,6 +50,7 @@
       padding: 12px 14px 24px 14px;
       overflow: hidden;
       transition: background 0.8s ease;
+      touch-action: none;
     }
 
     .screen {
@@ -374,6 +377,7 @@
       box-shadow: inset 0 6px 14px rgba(0,0,0,0.8), 0 12px 24px rgba(0,0,0,0.6);
       transition: background 0.6s ease, border-color 0.6s ease, filter 0.4s ease;
       position: relative;
+      touch-action: none;
     }
 
     #grid-board.shake {
@@ -458,6 +462,7 @@
       gap: 6px;
       align-items: center;
       margin-bottom: 8px;
+      touch-action: none;
     }
 
     .block-slot {
@@ -467,6 +472,7 @@
       justify-content: center;
       align-items: center;
       overflow: visible;
+      touch-action: none;
     }
 
     .mini-block {
@@ -1302,6 +1308,7 @@
     let dragData = null;
     let isDragging = false;
     let lastTargetCoords = null;
+    let activePointerId = null;
     const FINGER_OFFSET_Y = 70;
 
     const homeScreen = document.getElementById('home-screen');
@@ -1469,7 +1476,6 @@
       return null;
     }
 
-    // L-शेप्स की फ़्रीक्वेंसी को नियंत्रित (7/10 दर) करने वाला स्पॉनर
     function spawnBlocks() {
       const theme = LEVEL_THEMES[(currentLevel - 1) % LEVEL_THEMES.length];
       let lShapeCountThisBatch = 0;
@@ -1482,7 +1488,6 @@
         }
 
         if (!chosenShape) {
-          // L-शेप्स की आने की संभावना 70% तक सीमित, और एक बैच में अधिकतम 1 L-ब्लॉक
           const allowL = (lShapeCountThisBatch === 0) && (Math.random() < 0.28);
 
           if (allowL) {
@@ -1540,16 +1545,19 @@
         }
       }
 
-      container.onpointerdown = (e) => {
+      container.addEventListener('pointerdown', (e) => {
         e.preventDefault();
         e.stopPropagation();
-        startDragging(e.clientX, e.clientY, slotIdx);
-      };
+        try {
+          container.setPointerCapture(e.pointerId);
+        } catch(err) {}
+        startDragging(e, slotIdx);
+      }, { passive: false });
 
       slot.appendChild(container);
     }
 
-    function startDragging(clientX, clientY, slotIdx) {
+    function startDragging(e, slotIdx) {
       if (!availableBlocks[slotIdx]) return;
       
       if (isDragging && dragData) {
@@ -1560,6 +1568,7 @@
       AudioEngine.playPick();
 
       const bData = availableBlocks[slotIdx];
+      activePointerId = e.pointerId;
       dragData = {
         slotIdx,
         shape: bData.shape,
@@ -1589,24 +1598,26 @@
       isDragging = true;
       lastTargetCoords = null;
       
-      dragProxy.style.transform = `translate3d(${clientX}px, ${clientY - FINGER_OFFSET_Y}px, 0) translate3d(-50%, -50%, 0)`;
+      dragProxy.style.transform = `translate3d(${e.clientX}px, ${e.clientY - FINGER_OFFSET_Y}px, 0) translate3d(-50%, -50%, 0)`;
 
       window.addEventListener('pointermove', onGlobalPointerMove, { passive: false });
       window.addEventListener('pointerup', onGlobalPointerUp, { passive: false });
-      window.addEventListener('pointercancel', onGlobalPointerUp, { passive: false });
+      window.addEventListener('pointercancel', onGlobalPointerCancel, { passive: false });
     }
 
     function cleanupDragListeners() {
       window.removeEventListener('pointermove', onGlobalPointerMove);
       window.removeEventListener('pointerup', onGlobalPointerUp);
-      window.removeEventListener('pointercancel', onGlobalPointerUp);
+      window.removeEventListener('pointercancel', onGlobalPointerCancel);
       isDragging = false;
+      activePointerId = null;
       dragProxy.style.display = 'none';
       clearPreviewAndHints();
     }
 
     function onGlobalPointerMove(e) {
       if (!isDragging || !dragData) return;
+      if (activePointerId !== null && e.pointerId !== activePointerId) return;
       e.preventDefault();
 
       dragProxy.style.transform = `translate3d(${e.clientX}px, ${e.clientY - FINGER_OFFSET_Y}px, 0) translate3d(-50%, -50%, 0)`;
@@ -1623,17 +1634,28 @@
       }
     }
 
+    function onGlobalPointerCancel(e) {
+      if (!isDragging || !dragData) return;
+      if (activePointerId !== null && e.pointerId !== activePointerId) return;
+      const currentSlot = dragData.slotIdx;
+      cleanupDragListeners();
+      renderMiniBlock(currentSlot);
+      dragData = null;
+      lastTargetCoords = null;
+    }
+
     function onGlobalPointerUp(e) {
       if (!isDragging || !dragData) return;
+      if (activePointerId !== null && e.pointerId !== activePointerId) return;
       e.preventDefault();
 
       const currentSlot = dragData.slotIdx;
       const currentShape = dragData.shape;
       const currentColor = dragData.color;
 
+      const coords = getTargetGridCoords(e.clientX, e.clientY - FINGER_OFFSET_Y);
       cleanupDragListeners();
 
-      const coords = getTargetGridCoords(e.clientX, e.clientY - FINGER_OFFSET_Y);
       let placed = false;
 
       if (coords && canPlace(currentShape, coords.r, coords.c)) {

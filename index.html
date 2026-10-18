@@ -26,19 +26,27 @@
       -webkit-touch-callout: none;
     }
 
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      overscroll-behavior: none;
+      touch-action: none;
+    }
+
     body {
       background: #090614;
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
-      overflow: hidden;
-      touch-action: none;
+      min-height: 100dvh;
     }
 
     #game-container {
       width: 100vw;
       max-width: 480px;
+      height: 100vh;
       height: 100dvh;
       max-height: 950px;
       background: var(--bg-gradient);
@@ -51,6 +59,7 @@
       overflow: hidden;
       transition: background 0.8s ease;
       touch-action: none;
+      overscroll-behavior: none;
     }
 
     .screen {
@@ -972,10 +981,12 @@
       init() {
         if (!this.ctx) {
           const AudioContext = window.AudioContext || window.webkitAudioContext;
-          this.ctx = new AudioContext();
+          if (AudioContext) {
+            this.ctx = new AudioContext();
+          }
         }
         if (this.ctx && this.ctx.state === 'suspended') {
-          this.ctx.resume();
+          this.ctx.resume().catch(() => {});
         }
 
         if (Object.keys(this.preloadedAudios).length === 0) {
@@ -989,7 +1000,9 @@
       },
 
       vibrate(ms = 35) {
-        if (this.vibeOn && navigator.vibrate) navigator.vibrate(ms);
+        if (this.vibeOn && navigator.vibrate) {
+          try { navigator.vibrate(ms); } catch(e) {}
+        }
       },
 
       playVoice(url) {
@@ -1194,6 +1207,7 @@
       playClick() {
         if (!this.soundOn) return;
         this.init();
+        if (!this.ctx) return;
         try {
           const now = this.ctx.currentTime;
           const osc = this.ctx.createOscillator();
@@ -1243,8 +1257,14 @@
       window.removeEventListener('pointerdown', unlockAudio);
       window.removeEventListener('touchstart', unlockAudio);
     };
-    window.addEventListener('pointerdown', unlockAudio);
-    window.addEventListener('touchstart', unlockAudio);
+    window.addEventListener('pointerdown', unlockAudio, { passive: true });
+    window.addEventListener('touchstart', unlockAudio, { passive: true });
+
+    // Itch.io iframe scrolling and gesture locks
+    document.addEventListener('touchmove', (e) => {
+      if (e.target && e.target.closest && e.target.closest('.rules-list')) return;
+      e.preventDefault();
+    }, { passive: false });
 
     const LEVEL_THEMES = [
       { name: "Classic Neon", bg: 'radial-gradient(circle at 50% 25%, #1e183a, #0a0715)', gridBg: '#141022', cellBg: '#1f1833', cellBorder: '#322752', bevel: 'inset 0 2px 2px rgba(255,255,255,0.4), inset 0 -3px 2px rgba(0,0,0,0.4)', palette: ['#38bdf8', '#fbbf24', '#f43f5e', '#4ade80', '#c084fc'], scoreGrad: 'linear-gradient(180deg, #ffffff 0%, #38bdf8 60%, #0284c7 100%)', scoreGlow: 'rgba(56, 189, 248, 0.35)' },
@@ -1254,7 +1274,6 @@
       { name: "Amethyst Royal", bg: 'radial-gradient(circle at 50% 25%, #2c054b, #10011c)', gridBg: '#21043b', cellBg: '#4a0e7a', cellBorder: '#a855f7', bevel: 'inset 0 2px 2px #e9d5ff, inset 0 -3px 2px #1e0338', palette: ['#c084fc', '#e879f9', '#f472b6', '#38bdf8', '#facc15'], scoreGrad: 'linear-gradient(180deg, #fff 0%, #c084fc 50%, #9333ea 100%)', scoreGlow: 'rgba(192, 132, 252, 0.35)' }
     ];
 
-    // 4-ब्लॉक L-शेप्स (क्लासिक)
     const FOUR_BLOCK_L_SHAPES = [
       [[1, 0], [1, 0], [1, 1]],
       [[0, 1], [0, 1], [1, 1]],
@@ -1266,7 +1285,6 @@
       [[1, 0, 0], [1, 1, 1]]
     ];
 
-    // बेसिक नॉन-L आसान ब्लॉक्स
     const BASIC_SHAPES = [
       [[1, 1, 1]], [[1], [1], [1]], 
       [[1, 1, 1, 1]], [[1], [1], [1], [1]], 
@@ -1276,7 +1294,6 @@
       [[1, 1, 1], [1, 1, 1]]
     ];
 
-    // 5-ब्लॉक बड़ी L
     const BIG_FIVE_L_SHAPES = [
       [[1, 0, 0], [1, 0, 0], [1, 1, 1]],
       [[0, 0, 1], [0, 0, 1], [1, 1, 1]], 
@@ -1284,7 +1301,6 @@
       [[1, 1, 1], [0, 0, 1], [0, 0, 1]]
     ];
 
-    // हार्ड नॉन-L ब्लॉक्स
     const HARD_NON_L_SHAPES = [
       [[0, 1, 0], [1, 1, 1], [0, 1, 0]],
       [[1, 1, 1], [1, 1, 1], [1, 1, 1]],
@@ -1309,7 +1325,7 @@
     let isDragging = false;
     let lastTargetCoords = null;
     let activePointerId = null;
-    const FINGER_OFFSET_Y = 70;
+    const FINGER_OFFSET_Y = 75;
 
     const homeScreen = document.getElementById('home-screen');
     const gameplayScreen = document.getElementById('gameplay-screen');
@@ -1521,6 +1537,7 @@
 
       const container = document.createElement('div');
       container.className = 'mini-block';
+      container.id = `mini-block-el-${slotIdx}`;
       const rows = bData.shape.length;
       const cols = bData.shape[0].length;
 
@@ -1545,30 +1562,37 @@
         }
       }
 
+      // Pointer Event for Desktop & Modern Touch
       container.addEventListener('pointerdown', (e) => {
         e.preventDefault();
         e.stopPropagation();
-        try {
-          container.setPointerCapture(e.pointerId);
-        } catch(err) {}
-        startDragging(e, slotIdx);
+        startDragging(e.clientX, e.clientY, slotIdx, e.pointerId);
+      }, { passive: false });
+
+      // Fallback direct Touch Event for older Android/Motorola devices
+      container.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (e.touches && e.touches.length > 0) {
+          startDragging(e.touches[0].clientX, e.touches[0].clientY, slotIdx, null);
+        }
       }, { passive: false });
 
       slot.appendChild(container);
     }
 
-    function startDragging(e, slotIdx) {
+    function startDragging(clientX, clientY, slotIdx, pointerId) {
       if (!availableBlocks[slotIdx]) return;
       
       if (isDragging && dragData) {
-        renderMiniBlock(dragData.slotIdx);
+        restoreSlotVisibility(dragData.slotIdx);
         cleanupDragListeners();
       }
 
       AudioEngine.playPick();
 
       const bData = availableBlocks[slotIdx];
-      activePointerId = e.pointerId;
+      activePointerId = pointerId;
       dragData = {
         slotIdx,
         shape: bData.shape,
@@ -1577,7 +1601,9 @@
         cols: bData.shape[0].length
       };
 
-      document.getElementById(`slot-${slotIdx}`).innerHTML = '';
+      // Hide the mini block in tray WITHOUT destroying its DOM node
+      const el = document.getElementById(`mini-block-el-${slotIdx}`);
+      if (el) el.style.visibility = 'hidden';
 
       dragProxy.innerHTML = '';
       dragProxy.style.gridTemplateColumns = `repeat(${dragData.cols}, 36px)`;
@@ -1598,31 +1624,43 @@
       isDragging = true;
       lastTargetCoords = null;
       
-      dragProxy.style.transform = `translate3d(${e.clientX}px, ${e.clientY - FINGER_OFFSET_Y}px, 0) translate3d(-50%, -50%, 0)`;
+      dragProxy.style.transform = `translate3d(${clientX}px, ${clientY - FINGER_OFFSET_Y}px, 0) translate3d(-50%, -50%, 0)`;
 
+      // Attach both Pointer and Touch window listeners for bulletproof responsiveness
       window.addEventListener('pointermove', onGlobalPointerMove, { passive: false });
       window.addEventListener('pointerup', onGlobalPointerUp, { passive: false });
       window.addEventListener('pointercancel', onGlobalPointerCancel, { passive: false });
+
+      window.addEventListener('touchmove', onGlobalTouchMove, { passive: false });
+      window.addEventListener('touchend', onGlobalTouchEnd, { passive: false });
+      window.addEventListener('touchcancel', onGlobalTouchCancel, { passive: false });
+    }
+
+    function restoreSlotVisibility(slotIdx) {
+      const el = document.getElementById(`mini-block-el-${slotIdx}`);
+      if (el) el.style.visibility = 'visible';
     }
 
     function cleanupDragListeners() {
       window.removeEventListener('pointermove', onGlobalPointerMove);
       window.removeEventListener('pointerup', onGlobalPointerUp);
       window.removeEventListener('pointercancel', onGlobalPointerCancel);
+
+      window.removeEventListener('touchmove', onGlobalTouchMove);
+      window.removeEventListener('touchend', onGlobalTouchEnd);
+      window.removeEventListener('touchcancel', onGlobalTouchCancel);
+
       isDragging = false;
       activePointerId = null;
       dragProxy.style.display = 'none';
       clearPreviewAndHints();
     }
 
-    function onGlobalPointerMove(e) {
+    function handleDragMove(clientX, clientY) {
       if (!isDragging || !dragData) return;
-      if (activePointerId !== null && e.pointerId !== activePointerId) return;
-      e.preventDefault();
+      dragProxy.style.transform = `translate3d(${clientX}px, ${clientY - FINGER_OFFSET_Y}px, 0) translate3d(-50%, -50%, 0)`;
 
-      dragProxy.style.transform = `translate3d(${e.clientX}px, ${e.clientY - FINGER_OFFSET_Y}px, 0) translate3d(-50%, -50%, 0)`;
-
-      const coords = getTargetGridCoords(e.clientX, e.clientY - FINGER_OFFSET_Y);
+      const coords = getTargetGridCoords(clientX, clientY - FINGER_OFFSET_Y);
       
       if (!lastTargetCoords || !coords || lastTargetCoords.r !== coords.r || lastTargetCoords.c !== coords.c) {
         lastTargetCoords = coords;
@@ -1634,26 +1672,14 @@
       }
     }
 
-    function onGlobalPointerCancel(e) {
+    function handleDragDrop(clientX, clientY) {
       if (!isDragging || !dragData) return;
-      if (activePointerId !== null && e.pointerId !== activePointerId) return;
-      const currentSlot = dragData.slotIdx;
-      cleanupDragListeners();
-      renderMiniBlock(currentSlot);
-      dragData = null;
-      lastTargetCoords = null;
-    }
-
-    function onGlobalPointerUp(e) {
-      if (!isDragging || !dragData) return;
-      if (activePointerId !== null && e.pointerId !== activePointerId) return;
-      e.preventDefault();
 
       const currentSlot = dragData.slotIdx;
       const currentShape = dragData.shape;
       const currentColor = dragData.color;
 
-      const coords = getTargetGridCoords(e.clientX, e.clientY - FINGER_OFFSET_Y);
+      const coords = getTargetGridCoords(clientX, clientY - FINGER_OFFSET_Y);
       cleanupDragListeners();
 
       let placed = false;
@@ -1671,6 +1697,8 @@
 
         AudioEngine.playPlace();
         availableBlocks[currentSlot] = null;
+        const slotEl = document.getElementById(`slot-${currentSlot}`);
+        if (slotEl) slotEl.innerHTML = '';
         placed = true;
         renderGrid();
         
@@ -1679,7 +1707,7 @@
       }
 
       if (!placed) {
-        renderMiniBlock(currentSlot);
+        restoreSlotVisibility(currentSlot);
       } else {
         if (availableBlocks[0] === null && availableBlocks[1] === null && availableBlocks[2] === null) {
           spawnBlocks();
@@ -1687,6 +1715,62 @@
         checkGameOver();
       }
 
+      dragData = null;
+      lastTargetCoords = null;
+    }
+
+    function onGlobalPointerMove(e) {
+      if (!isDragging || !dragData) return;
+      if (activePointerId !== null && e.pointerId !== activePointerId) return;
+      e.preventDefault();
+      handleDragMove(e.clientX, e.clientY);
+    }
+
+    function onGlobalPointerUp(e) {
+      if (!isDragging || !dragData) return;
+      if (activePointerId !== null && e.pointerId !== activePointerId) return;
+      e.preventDefault();
+      handleDragDrop(e.clientX, e.clientY);
+    }
+
+    function onGlobalPointerCancel(e) {
+      if (!isDragging || !dragData) return;
+      if (activePointerId !== null && e.pointerId !== activePointerId) return;
+      const currentSlot = dragData.slotIdx;
+      cleanupDragListeners();
+      restoreSlotVisibility(currentSlot);
+      dragData = null;
+      lastTargetCoords = null;
+    }
+
+    function onGlobalTouchMove(e) {
+      if (!isDragging || !dragData) return;
+      e.preventDefault();
+      if (e.touches && e.touches.length > 0) {
+        handleDragMove(e.touches[0].clientX, e.touches[0].clientY);
+      }
+    }
+
+    function onGlobalTouchEnd(e) {
+      if (!isDragging || !dragData) return;
+      e.preventDefault();
+      const touch = e.changedTouches ? e.changedTouches[0] : null;
+      if (touch) {
+        handleDragDrop(touch.clientX, touch.clientY);
+      } else {
+        const currentSlot = dragData.slotIdx;
+        cleanupDragListeners();
+        restoreSlotVisibility(currentSlot);
+        dragData = null;
+        lastTargetCoords = null;
+      }
+    }
+
+    function onGlobalTouchCancel(e) {
+      if (!isDragging || !dragData) return;
+      const currentSlot = dragData.slotIdx;
+      cleanupDragListeners();
+      restoreSlotVisibility(currentSlot);
       dragData = null;
       lastTargetCoords = null;
     }

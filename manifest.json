@@ -5,9 +5,9 @@
   "name": "Block Blast Deluxe",
   "orientation": "any",
   "scope": "/",
-  "short_name": "Block blast",
+  "short_name": "Blockblast",
   "start_url": "/",
   "theme_color": "#ffffff",
-  "description": "Play Block Blast Deluxe game",
-  "id": "com.chandresh.blockblast"
+  "description": "Block Blast Deluxe Puzzle Game",
+  "id": "/blockblast/"
 }

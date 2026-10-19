@@ -4,10 +4,24 @@
   "display": "standalone",
   "name": "Block Blast Deluxe",
   "orientation": "any",
-  "scope": "/",
+  "scope": "/blockblast/",
   "short_name": "Blockblast",
-  "start_url": "/",
+  "start_url": "/blockblast/",
   "theme_color": "#ffffff",
   "description": "Block Blast Deluxe Puzzle Game",
-  "id": "/blockblast/"
+  "id": "/blockblast/",
+  "icons": [
+    {
+      "src": "launchericon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "launchericon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
 }
